@@ -20,9 +20,9 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
@@ -89,7 +89,7 @@ public class RestData {
 	}
 
 	@POST
-	@Path("getProvinceStateByCountry")
+	@Path("/getProvinceStateByCountry")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getProvinceStateByCountry(String country) {
@@ -101,38 +101,42 @@ public class RestData {
 	}
 
 	// Returns one data set
-	@GetMapping("/getDataByCountry/{country}")
+	@GetMapping("/deaths/getDataByCountry")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getOneDataSet(@PathVariable("country") String country) {
+	public String getDeathsDataSet(@RequestParam String country) {
 
-		formatDataService.formatDataForLocation(country, EntityType.CONFIRMED);
+		formatDataService.formatDataForLocation(country, EntityType.DEATHS);
 
 		// returns a json object representing chart data
-		return convertToStringService.convertGenericObjectToJsonArray(chartsJsDataService.getChartsJsDataSingleDataSet(
+		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
 				formatDataService.formatDataForCountryAndState(country, "", EntityType.CONFIRMED), country,
 				RequestType.RAW_DATA, EntityType.CONFIRMED));
 	}
 
 	// Returns one data set
-	@PostMapping("/getCompareLocations")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@GetMapping("/confirmed/getDataByCountry")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getCompareLocations(@RequestBody String request) {
-		// Test
-		// Get the locations from the request
+	public String getConfirmedDataSet(@RequestParam String country) {
 
-		RequestBodyCombinedCountryAndState requestBody = convertToObjectService
-				.getRequestBodyWithCombinedCountryAndState(request);
-		RequestType requestType = convertStringToEnumTypeService
-				.convertStringToRequestType(requestBody.getRequestType());
-		EntityType entityType = convertStringToEnumTypeService.convertStringToEntityType(requestBody.getEntityType());
-		String locations = requestBody.getCombinedCountryAndState();
+		formatDataService.formatDataForLocation(country, EntityType.CONFIRMED);
+
+		// returns a json object representing chart data
+		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
+				formatDataService.formatDataForCountryAndState(country, "", EntityType.CONFIRMED), country,
+				RequestType.RAW_DATA, EntityType.CONFIRMED));
+	}
+
+	@PostMapping("/getCompareLocations")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getCompareLocations(@RequestBody RequestBodyCombinedCountryAndState request) {
+
+		RequestType requestType = convertStringToEnumTypeService.convertStringToRequestType(request.getRequestType());
+		EntityType entityType = convertStringToEnumTypeService.convertStringToEntityType(request.getEntityType());
+		String locations = request.getCombinedCountryAndState();
 		LocationCombinedCountryAndState[] locationArray = convertToObjectService
 				.jsonStringToArrayCombinedLocation(locations);
-		// String entityType = "confirmed";
-		// Get the RequestType
-		// EntityType entType =
-		// convertStringToEnumTypeService.convertStringToEntityType(entityType);
+
 		// Get the raw data for each location
 		ArrayList<LinkedHashMap<String, Integer>> locationsData = formatDataService
 				.formatDataForMultipleLocations(locationArray, entityType);
@@ -151,7 +155,7 @@ public class RestData {
 	@PostMapping("/getDataByCountryAndProvince")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getDataByCountryAndProvince(@RequestBody String request) {
+	public String getDataByCountryAndProvince(@RequestParam String request) {
 
 		RequestBodyCombinedCountryAndState requestBody = convertToObjectService
 				.getRequestBodyWithCombinedCountryAndState(request);

@@ -216,7 +216,7 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 			}
 		} else if (requestType == RequestType.DAILY_INCREASE) {
 			if (entityType == EntityType.CONFIRMED) {
-				return "Daily Increase - Confirmed Dases";
+				return "Daily Increase - Confirmed Cases";
 			} else if (entityType == EntityType.DEATHS) {
 				return "Daily Increase - Deaths";
 			}
