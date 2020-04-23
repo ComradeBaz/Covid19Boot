@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.domrade.service.controllers;
+package com.domrade.rest.controllers;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,6 +33,7 @@ import com.domrade.interfaces.converters.ConvertStringToEnumTypeServiceLocal;
 import com.domrade.interfaces.converters.ConvertToObjectServiceLocal;
 import com.domrade.interfaces.converters.ConvertToStringServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
+import com.domrade.interfaces.data.FormatUsDataServiceLocal;
 import com.domrade.interfaces.local.CachedDataLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.MarchServiceLocal;
@@ -70,6 +71,9 @@ public class RestData {
 
 	@Autowired
 	private ConvertStringToEnumTypeServiceLocal convertStringToEnumTypeService;
+
+	@Autowired
+	private FormatUsDataServiceLocal formatUsDataService;
 
 	@GetMapping("/getCountries")
 	@Produces(MediaType.APPLICATION_JSON)

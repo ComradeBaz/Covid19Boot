@@ -24,4 +24,6 @@ public interface USAprilDeathsServiceLocal {
 
 	public USAprilDeaths findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USAprilDeaths> getEntryByProvenceState(String provenceState);
+
 }

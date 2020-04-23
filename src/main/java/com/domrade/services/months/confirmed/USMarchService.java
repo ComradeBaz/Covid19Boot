@@ -40,4 +40,9 @@ public class USMarchService implements USMarchServiceLocal {
 		return marchDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
 
+	@Override
+	public List<USMarch> getEntryByProvenceState(String provenceState) {
+		return marchDao.getEntryByProvenceState(provenceState);
+	}
+
 }

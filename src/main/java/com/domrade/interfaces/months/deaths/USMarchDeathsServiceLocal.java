@@ -23,4 +23,6 @@ public interface USMarchDeathsServiceLocal {
 	public USMarchDeaths getUSMarchDeathsEntryByCountryRegion(String countryRegion);
 
 	public USMarchDeaths findByCountryRegionProvinceState(String countryRegion, String provinceState);
+
+	public List<USMarchDeaths> getEntryByProvenceState(String provenceState);
 }

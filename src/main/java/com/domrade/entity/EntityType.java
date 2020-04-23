@@ -10,6 +10,5 @@ package com.domrade.entity;
  * @author David
  */
 public enum EntityType {
-    CONFIRMED, 
-    DEATHS;
+	CONFIRMED, DEATHS, US_CONFIRMED, US_DEATHS;
 }

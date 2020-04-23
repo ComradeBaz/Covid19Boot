@@ -24,4 +24,6 @@ public interface USMarchDao extends Dao<Long, USMarch> {
 
 	public USMarch findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USMarch> getEntryByProvenceState(String provenceState);
+
 }

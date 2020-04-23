@@ -28,4 +28,6 @@ public interface USFebruaryDeathsServiceLocal {
 
 	public USFebruaryDeaths findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USFebruaryDeaths> getEntryByProvenceState(String provenceState);
+
 }

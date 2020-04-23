@@ -48,4 +48,5 @@ public interface FormatDataServiceLocal {
 	public LocationCombinedCountryAndState[] getReorderedListOfLocations(LocationCombinedCountryAndState[] locations,
 			int indexOfLongestMap);
 
+	public <T> LinkedHashMap<String, Integer> removePlaceholderData(LinkedHashMap<String, Integer> map);
 }

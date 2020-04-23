@@ -73,4 +73,10 @@ public class JpaUSFebruaryDao extends JpaDao<Long, USFebruary> implements USFebr
 		return listOfLocations;
 	}
 
+	@Override
+	public List<USFebruary> getEntryByProvenceState(String provenceState) {
+		return entityManager.createNamedQuery("USFebruary.findByProvenceState")
+				.setParameter("provenceState", provenceState).getResultList();
+	}
+
 }

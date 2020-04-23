@@ -58,4 +58,8 @@ public interface CachedDataLocal {
 
 	public List<String> getAllCountries();
 
+	public List<String> getUsStates();
+
+	public String getCountyIdByStateAndCounty(String state, String county);
+
 }

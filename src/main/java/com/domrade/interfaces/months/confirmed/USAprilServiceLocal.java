@@ -24,4 +24,6 @@ public interface USAprilServiceLocal {
 
 	public USApril findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USApril> getEntryByProvenceState(String provenceState);
+
 }

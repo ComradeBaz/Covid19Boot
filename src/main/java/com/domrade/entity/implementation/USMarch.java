@@ -11,6 +11,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @NamedQueries({ @NamedQuery(name = "USMarch.findAllEntries", query = "SELECT m FROM USMarch m"),
+		@NamedQuery(name = "USMarch.findByProvenceState", query = "SELECT m FROM USMarch m WHERE m.provenceState =:provenceState"),
 		@NamedQuery(name = "USMarch.findByCountryRegionProvinceState", query = "SELECT m FROM USMarch m WHERE m.countryRegion =:countryRegion AND m.provenceState =:provenceState"),
 		@NamedQuery(name = "USMarch.findByCountryRegion", query = "SELECT m FROM USMarch m WHERE m.countryRegion =:countryRegion") })
 @Entity
@@ -21,16 +22,17 @@ public class USMarch implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public USMarch(long id, String provenceState, String countryRegion, String latitude, String longitude, int _1,
-			int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13, int _14,
-			int _15, int _16, int _17, int _18, int _19, int _20, int _21, int _22, int _23, int _24, int _25, int _26,
-			int _27, int _28, int _29, int _30, int _31) {
+	public USMarch(long id, String provenceState, String countryRegion, String latitude, String longitude,
+			String admin2, int _1, int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11,
+			int _12, int _13, int _14, int _15, int _16, int _17, int _18, int _19, int _20, int _21, int _22, int _23,
+			int _24, int _25, int _26, int _27, int _28, int _29, int _30, int _31) {
 
 		this.id = id;
 		this.provenceState = provenceState;
 		this.countryRegion = countryRegion;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.admin2 = admin2;
 		this.mar01 = _1;
 		this.mar02 = _2;
 		this.mar03 = _3;
@@ -171,6 +173,17 @@ public class USMarch implements Serializable {
 
 	@Column(name = "_31_03")
 	private int mar31;
+
+	@Column(name = "admin2")
+	private String admin2;
+
+	public String getAdmin2() {
+		return admin2;
+	}
+
+	public void setAdmin2(String admin2) {
+		this.admin2 = admin2;
+	}
 
 	public long getId() {
 		return id;

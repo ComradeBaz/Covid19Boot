@@ -73,4 +73,9 @@ public class USFebruaryService implements USFebruaryServiceLocal {
 
 		return sortedListOfLocations;
 	}
+
+	@Override
+	public List<USFebruary> getEntryByProvenceState(String provenceState) {
+		return februaryDao.getEntryByProvenceState(provenceState);
+	}
 }

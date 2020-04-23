@@ -42,4 +42,9 @@ public class USAprilService implements USAprilServiceLocal {
 		return aprilDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
 
+	@Override
+	public List<USApril> getEntryByProvenceState(String provenceState) {
+		return aprilDao.getEntryByProvenceState(provenceState);
+	}
+
 }

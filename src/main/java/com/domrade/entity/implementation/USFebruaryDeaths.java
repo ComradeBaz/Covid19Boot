@@ -20,6 +20,7 @@ import javax.persistence.Table;
  * @author David
  */
 @NamedQueries({ @NamedQuery(name = "USFebruaryDeaths.findAllEntries", query = "SELECT f FROM USFebruaryDeaths f"),
+		@NamedQuery(name = "USFebruaryDeaths.findByProvenceState", query = "SELECT f FROM USFebruaryDeaths f WHERE f.provenceState =:provenceState"),
 		@NamedQuery(name = "USFebruaryDeaths.findAllCountryRegion", query = "SELECT DISTINCT f.countryRegion FROM USFebruaryDeaths f"),
 		@NamedQuery(name = "USFebruaryDeaths.findByCountryRegionProvinceState", query = "SELECT f FROM USFebruaryDeaths f WHERE f.countryRegion =:countryRegion AND f.provenceState =:provenceState"),
 		@NamedQuery(name = "USFebruaryDeaths.findProvincetateByCountry", query = "SELECT f.provenceState FROM USFebruaryDeaths f WHERE f.countryRegion =:countryRegion"),
@@ -34,9 +35,9 @@ public class USFebruaryDeaths implements Serializable {
 	}
 
 	public USFebruaryDeaths(long id, String provenceState, String countryRegion, String latitude, String longitude,
-			int _1, int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13,
-			int _14, int _15, int _16, int _17, int _18, int _19, int _20, int _21, int _22, int _23, int _24, int _25,
-			int _26, int _27, int _28, int _29, int _30) {
+			int population, String admin2, int _1, int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9,
+			int _10, int _11, int _12, int _13, int _14, int _15, int _16, int _17, int _18, int _19, int _20, int _21,
+			int _22, int _23, int _24, int _25, int _26, int _27, int _28, int _29, int _30) {
 
 		this.id = id;
 		this.provenceState = provenceState;
@@ -175,6 +176,28 @@ public class USFebruaryDeaths implements Serializable {
 
 	@Column(name = "_29_02")
 	private int feb29;
+
+	@Column(name = "admin2")
+	private String admin2;
+
+	@Column(name = "population")
+	private int population;
+
+	public int getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+
+	public String getAdmin2() {
+		return admin2;
+	}
+
+	public void setAdmin2(String admin2) {
+		this.admin2 = admin2;
+	}
 
 	public long getId() {
 		return id;

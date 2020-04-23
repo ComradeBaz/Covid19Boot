@@ -42,4 +42,9 @@ public class USAprilDeathsService implements USAprilDeathsServiceLocal {
 		return aprilDeathsDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
 
+	@Override
+	public List<USAprilDeaths> getEntryByProvenceState(String provenceState) {
+		return aprilDeathsDao.getEntryByProvenceState(provenceState);
+	}
+
 }

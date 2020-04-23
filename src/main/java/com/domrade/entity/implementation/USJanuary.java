@@ -20,6 +20,8 @@ import javax.persistence.Table;
  * @author David
  */
 @NamedQueries({ @NamedQuery(name = "USJanuary.findAllEntries", query = "SELECT j FROM USJanuary j"),
+		@NamedQuery(name = "USJanuary.findAllStates", query = "SELECT DISTINCT j.provenceState FROM USJanuary j"),
+		@NamedQuery(name = "USJanuary.findByProvenceState", query = "SELECT j FROM USJanuary j WHERE j.provenceState =:provenceState"),
 		@NamedQuery(name = "USJanuary.findByCountryRegionProvinceState", query = "SELECT j FROM USJanuary j WHERE j.countryRegion =:countryRegion AND j.provenceState =:provenceState"),
 		@NamedQuery(name = "USJanuary.findByCountryRegion", query = "SELECT j FROM USJanuary j WHERE j.countryRegion =:countryRegion") })
 @Entity
@@ -30,14 +32,15 @@ public class USJanuary implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public USJanuary(long id, String provenceState, String countryRegion, String latitude, String longitude, int _22,
-			int _23, int _24, int _25, int _26, int _27, int _28, int _29, int _30, int _31) {
+	public USJanuary(long id, String provenceState, String countryRegion, String latitude, String longitude,
+			String admin2, int _22, int _23, int _24, int _25, int _26, int _27, int _28, int _29, int _30, int _31) {
 
 		this.id = id;
 		this.provenceState = provenceState;
 		this.countryRegion = countryRegion;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.admin2 = admin2;
 		this.jan22 = _22;
 		this.jan23 = _23;
 		this.jan24 = _24;
@@ -95,12 +98,23 @@ public class USJanuary implements Serializable {
 	@Column(name = "_31_01")
 	private int jan31;
 
-	public long getId() {
-		return id;
+	@Column(name = "admin2")
+	private String admin2;
+
+	public String getAdmin2() {
+		return admin2;
+	}
+
+	public void setAdmin2(String admin2) {
+		this.admin2 = admin2;
 	}
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getProvenceState() {

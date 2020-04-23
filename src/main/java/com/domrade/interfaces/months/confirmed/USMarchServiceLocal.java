@@ -23,4 +23,6 @@ public interface USMarchServiceLocal {
 	public USMarch getUSMarchEntryByCountryRegion(String countryRegion);
 
 	public USMarch findByCountryRegionProvinceState(String countryRegion, String provinceState);
+
+	public List<USMarch> getEntryByProvenceState(String provenceState);
 }

@@ -42,4 +42,10 @@ public class JpaUSJanuaryDeathsDao extends JpaDao<Long, USJanuaryDeaths> impleme
 				.getResultList().get(0);
 	}
 
+	@Override
+	public List<USJanuaryDeaths> getEntryByProvenceState(String provenceState) {
+		return entityManager.createNamedQuery("USJanuaryDeaths.findByProvenceState")
+				.setParameter("provenceState", provenceState).getResultList();
+	}
+
 }

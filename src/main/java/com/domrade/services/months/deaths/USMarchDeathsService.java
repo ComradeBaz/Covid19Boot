@@ -40,4 +40,9 @@ public class USMarchDeathsService implements USMarchDeathsServiceLocal {
 		return marchDeathsDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
 
+	@Override
+	public List<USMarchDeaths> getEntryByProvenceState(String provenceState) {
+		return marchDeathsDao.getEntryByProvenceState(provenceState);
+	}
+
 }

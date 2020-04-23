@@ -40,4 +40,14 @@ public class USJanuaryService implements USJanuaryServiceLocal {
 		return januaryDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
 
+	@Override
+	public List<String> getAllStates() {
+		return januaryDao.getAllStates();
+	}
+
+	@Override
+	public List<USJanuary> getEntryByProvenceState(String provenceState) {
+		return januaryDao.getEntryByProvenceState(provenceState);
+	}
+
 }

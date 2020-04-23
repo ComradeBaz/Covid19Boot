@@ -86,6 +86,7 @@ public class FormatDataService implements FormatDataServiceLocal {
 		return removePlaceholderData(map);
 	}
 
+	@Override
 	public <T> LinkedHashMap<String, Integer> removePlaceholderData(LinkedHashMap<String, Integer> map) {
 
 		// Remove entries where the value = -1(placeholder value to populate a month

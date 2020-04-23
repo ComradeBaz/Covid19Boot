@@ -30,4 +30,6 @@ public interface USFebruaryServiceLocal {
 
 	public USFebruary findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USFebruary> getEntryByProvenceState(String provenceState);
+
 }

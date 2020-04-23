@@ -11,6 +11,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @NamedQueries({ @NamedQuery(name = "USApril.findAllEntries", query = "SELECT a FROM USApril a"),
+		@NamedQuery(name = "USApril.findByProvenceState", query = "SELECT a FROM USApril a WHERE a.provenceState =:provenceState"),
 		@NamedQuery(name = "USApril.findByCountryRegionProvinceState", query = "SELECT a FROM USApril a WHERE a.countryRegion =:countryRegion AND a.provenceState =:provenceState"),
 		@NamedQuery(name = "USApril.findByCountryRegion", query = "SELECT a FROM USApril a WHERE a.countryRegion =:countryRegion") })
 @Entity
@@ -21,8 +22,8 @@ public class USApril implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public USApril(String provenceState, String countryRegion, String latitude, String longitude, int _1, int _2,
-			int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13, int _14,
+	public USApril(String provenceState, String countryRegion, String latitude, String longitude, String admin2, int _1,
+			int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13, int _14,
 			int _15, int _16, int _17, int _18, int _19, int _20, int _21, int _22, int _23, int _24, int _25, int _26,
 			int _27, int _28, int _29, int _30) {
 
@@ -30,6 +31,7 @@ public class USApril implements Serializable {
 		this.countryRegion = countryRegion;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.admin2 = admin2;
 		this.apr01 = _1;
 		this.apr02 = _2;
 		this.apr03 = _3;
@@ -66,6 +68,8 @@ public class USApril implements Serializable {
 	@Column(name = "id", nullable = false)
 	private long id;
 
+	@Column(name = "admin2")
+	private String admin2;
 	@Column(name = "provence_state")
 	private String provenceState;
 	@Column(name = "country_region", nullable = false)
@@ -166,6 +170,14 @@ public class USApril implements Serializable {
 
 	@Column(name = "_30_04")
 	private int apr30;
+
+	public String getAdmin2() {
+		return admin2;
+	}
+
+	public void setAdmin2(String admin2) {
+		this.admin2 = admin2;
+	}
 
 	public long getId() {
 		return id;

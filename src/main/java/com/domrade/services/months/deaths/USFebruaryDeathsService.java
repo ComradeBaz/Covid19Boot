@@ -49,4 +49,9 @@ public class USFebruaryDeathsService implements USFebruaryDeathsServiceLocal {
 	public USFebruaryDeaths findByCountryRegionProvinceState(String countryRegion, String provinceState) {
 		return februaryDeathsDao.findByCountryRegionProvinceState(countryRegion, provinceState);
 	}
+
+	@Override
+	public List<USFebruaryDeaths> getEntryByProvenceState(String provenceState) {
+		return februaryDeathsDao.getEntryByProvenceState(provenceState);
+	}
 }

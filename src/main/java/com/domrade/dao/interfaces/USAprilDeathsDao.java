@@ -24,4 +24,6 @@ public interface USAprilDeathsDao extends Dao<Long, USAprilDeaths> {
 
 	public USAprilDeaths findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<USAprilDeaths> getEntryByProvenceState(String provenceState);
+
 }

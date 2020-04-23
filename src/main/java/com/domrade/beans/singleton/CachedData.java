@@ -5,7 +5,9 @@
  */
 package com.domrade.beans.singleton;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Component;
 
 import com.domrade.dao.interfaces.DataFileSourceDao;
 import com.domrade.dao.interfaces.FebruaryDao;
+import com.domrade.interfaces.cache.CachedUsMonthlyDataServiceLocal;
 import com.domrade.interfaces.local.CachedDataLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
+import com.domrade.interfaces.months.confirmed.USJanuaryServiceLocal;
 
 /**
  *
@@ -34,6 +38,12 @@ public class CachedData implements CachedDataLocal {
 
 	@Autowired
 	FebruaryServiceLocal februaryService;
+
+	@Autowired
+	private USJanuaryServiceLocal usJanuaryService;
+
+	@Autowired
+	private CachedUsMonthlyDataServiceLocal cachedUsMonthlyDataService;
 
 	// CSV File
 	private List<String> allFileNames;
@@ -55,6 +65,10 @@ public class CachedData implements CachedDataLocal {
 	// List of locations
 	private List<String> locations;
 
+	// US States
+	private List<String> usStates;
+	// US States and Counties
+	LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties;
 	// Common Data
 	private List<String> allCountries;
 
@@ -68,6 +82,8 @@ public class CachedData implements CachedDataLocal {
 		setLocations(februaryService.getAllFebruaryCountryRegionProvinceState());
 		allFileNames = dataFileSourceDao.findAllFileNames();
 		setFileLocation(fileDirectory);
+		usStates = usJanuaryService.getAllStates();
+		statesAndCounties = cachedUsMonthlyDataService.getStatesAndCounties();
 	}
 
 	@Override
@@ -250,6 +266,31 @@ public class CachedData implements CachedDataLocal {
 
 	public void setLocations(List<String> locations) {
 		this.locations = locations;
+	}
+
+	@Override
+	public List<String> getUsStates() {
+		return usStates;
+	}
+
+	public void setUsStates(List<String> usStates) {
+		this.usStates = usStates;
+	}
+
+	public LinkedHashMap<String, LinkedHashMap<String, String>> getStatesAndCounties() {
+		return statesAndCounties;
+	}
+
+	public void setStatesAndCounties(LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties) {
+		this.statesAndCounties = statesAndCounties;
+	}
+
+	@Override
+	public String getCountyIdByStateAndCounty(String state, String county) {
+		Map<String, String> statesAndCounties = this.statesAndCounties.get(state);
+		String id = statesAndCounties.get(county);
+
+		return id;
 	}
 
 }

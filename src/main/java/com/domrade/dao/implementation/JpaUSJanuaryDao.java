@@ -42,4 +42,15 @@ public class JpaUSJanuaryDao extends JpaDao<Long, USJanuary> implements USJanuar
 				.getResultList().get(0);
 	}
 
+	@Override
+	public List<String> getAllStates() {
+		return entityManager.createNamedQuery("USJanuary.findAllStates").getResultList();
+	}
+
+	@Override
+	public List<USJanuary> getEntryByProvenceState(String provenceState) {
+		return entityManager.createNamedQuery("USJanuary.findByProvenceState")
+				.setParameter("provenceState", provenceState).getResultList();
+	}
+
 }

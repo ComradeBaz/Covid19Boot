@@ -20,6 +20,7 @@ import javax.persistence.Table;
  * @author David
  */
 @NamedQueries({ @NamedQuery(name = "USJanuaryDeaths.findAllEntries", query = "SELECT j FROM USJanuaryDeaths j"),
+		@NamedQuery(name = "USJanuaryDeaths.findByProvenceState", query = "SELECT j FROM USJanuaryDeaths j WHERE j.provenceState =:provenceState"),
 		@NamedQuery(name = "USJanuaryDeaths.findByCountryRegionProvinceState", query = "SELECT j FROM USJanuaryDeaths j WHERE j.countryRegion =:countryRegion AND j.provenceState =:provenceState"),
 		@NamedQuery(name = "USJanuaryDeaths.findByCountryRegion", query = "SELECT j FROM USJanuaryDeaths j WHERE j.countryRegion =:countryRegion") })
 @Entity
@@ -31,13 +32,16 @@ public class USJanuaryDeaths implements Serializable {
 	}
 
 	public USJanuaryDeaths(long id, String provenceState, String countryRegion, String latitude, String longitude,
-			int _22, int _23, int _24, int _25, int _26, int _27, int _28, int _29, int _30, int _31) {
+			int population, String admin2, int _22, int _23, int _24, int _25, int _26, int _27, int _28, int _29,
+			int _30, int _31) {
 
 		this.id = id;
 		this.provenceState = provenceState;
 		this.countryRegion = countryRegion;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.admin2 = admin2;
+		this.population = population;
 		this.jan22 = _22;
 		this.jan23 = _23;
 		this.jan24 = _24;
@@ -94,6 +98,28 @@ public class USJanuaryDeaths implements Serializable {
 
 	@Column(name = "_31_01")
 	private int jan31;
+
+	@Column(name = "population")
+	private int population;
+
+	@Column(name = "admin2")
+	private String admin2;
+
+	public int getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+
+	public String getAdmin2() {
+		return admin2;
+	}
+
+	public void setAdmin2(String admin2) {
+		this.admin2 = admin2;
+	}
 
 	public long getId() {
 		return id;

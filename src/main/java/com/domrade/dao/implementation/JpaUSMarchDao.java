@@ -42,4 +42,10 @@ public class JpaUSMarchDao extends JpaDao<Long, USMarch> implements USMarchDao {
 				.getResultList().get(0);
 	}
 
+	@Override
+	public List<USMarch> getEntryByProvenceState(String provenceState) {
+		return entityManager.createNamedQuery("USMarch.findByProvenceState")
+				.setParameter("provenceState", provenceState).getResultList();
+	}
+
 }

@@ -42,4 +42,10 @@ public class JpaUSAprilDao extends JpaDao<Long, USApril> implements USAprilDao {
 				.getResultList().get(0);
 	}
 
+	@Override
+	public List<USApril> getEntryByProvenceState(String provenceState) {
+		return entityManager.createNamedQuery("USApril.findByProvenceState")
+				.setParameter("provenceState", provenceState).getResultList();
+	}
+
 }

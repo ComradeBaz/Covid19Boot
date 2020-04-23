@@ -24,4 +24,8 @@ public interface USJanuaryServiceLocal {
 
 	public USJanuary findByCountryRegionProvinceState(String countryRegion, String provinceState);
 
+	public List<String> getAllStates();
+
+	public List<USJanuary> getEntryByProvenceState(String provenceState);
+
 }
