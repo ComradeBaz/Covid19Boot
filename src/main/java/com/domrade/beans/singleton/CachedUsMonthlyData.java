@@ -1,7 +1,7 @@
 package com.domrade.beans.singleton;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.domrade.entity.EntityType;
 import com.domrade.interfaces.cache.CachedUsMonthlyDataServiceLocal;
+import com.domrade.interfaces.local.CachedDataLocal;
 import com.domrade.interfaces.local.CachedUsMonthlyDataLocal;
+import com.domrade.rest.request.UsStateAndCounty;
 
 @Component
 @Scope("application")
@@ -18,6 +21,9 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 
 	@Autowired
 	private CachedUsMonthlyDataServiceLocal usCachedMonthlyDataService;
+
+	@Autowired
+	private CachedDataLocal cachedData;
 
 	// Confirmed
 	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateData = new LinkedHashMap<>();
@@ -92,13 +98,42 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	}
 
 	@Override
-	public Map<String, Integer> getConfirmedCountyDataByCountyId(String id) {
+	public LinkedHashMap<String, Integer> getConfirmedCountyDataByCountyId(String id) {
 		return this.usCountyData.get(id);
 	}
 
 	@Override
-	public Map<String, Integer> getDeathsCountyDataByCountyId(String id) {
+	public LinkedHashMap<String, Integer> getDeathsCountyDataByCountyId(String id) {
 		return this.usCountyDeathsData.get(id);
+	}
+
+	@Override
+	public ArrayList<LinkedHashMap<String, Integer>> formatDataForMultipleUsLocations(
+			UsStateAndCounty[] statesAndCounties, String level, EntityType entityType) {
+
+		ArrayList<LinkedHashMap<String, Integer>> returnList = new ArrayList<>();
+		for (UsStateAndCounty s : statesAndCounties) {
+			String state = s.getState();
+			String county = s.getCounty();
+
+			if (entityType == EntityType.US_CONFIRMED) {
+				if (level.equalsIgnoreCase("state")) {
+					returnList.add(this.getUsDataByState(state));
+				} else {
+					String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+					returnList.add(this.getConfirmedCountyDataByCountyId(countyId));
+				}
+			} else { // EntityType.US_DEATHS
+				if (level.equalsIgnoreCase("state")) {
+					returnList.add(this.getUsDeathsByState(state));
+				} else {
+					String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+					returnList.add(this.getDeathsCountyDataByCountyId(countyId));
+				}
+			}
+
+		}
+		return returnList;
 	}
 
 }

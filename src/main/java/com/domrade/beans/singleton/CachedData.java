@@ -5,6 +5,7 @@
  */
 package com.domrade.beans.singleton;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,9 @@ import com.domrade.interfaces.months.confirmed.USJanuaryServiceLocal;
 /**
  *
  * @author David
+ * 
+ *         Location data not specific to a time period Countries with
+ *         provenceState and US states and counties
  */
 @Component
 @Scope("application")
@@ -67,8 +71,10 @@ public class CachedData implements CachedDataLocal {
 
 	// US States
 	private List<String> usStates;
-	// US States and Counties
+	// US States and Counties with IDs
 	LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties;
+	// US States and counties but not Ids
+	LinkedHashMap<String, ArrayList<String>> statesAndCountiesNoId;
 	// Common Data
 	private List<String> allCountries;
 
@@ -84,6 +90,7 @@ public class CachedData implements CachedDataLocal {
 		setFileLocation(fileDirectory);
 		usStates = usJanuaryService.getAllStates();
 		statesAndCounties = cachedUsMonthlyDataService.getStatesAndCounties();
+		statesAndCountiesNoId = cachedUsMonthlyDataService.getCountiesByState(statesAndCounties);
 	}
 
 	@Override
@@ -291,6 +298,12 @@ public class CachedData implements CachedDataLocal {
 		String id = statesAndCounties.get(county);
 
 		return id;
+	}
+
+	// Returns a list of counties for the given state
+	@Override
+	public ArrayList<String> getCountiesByState(String state) {
+		return this.statesAndCountiesNoId.get(state);
 	}
 
 }

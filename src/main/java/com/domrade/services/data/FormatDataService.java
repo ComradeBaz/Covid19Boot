@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -285,28 +286,35 @@ public class FormatDataService implements FormatDataServiceLocal {
 				LinkedHashMap<String, Integer> currentMap = listOfCountriesDataSet.get(i);
 				Set<Map.Entry<String, Integer>> currentMapSetOfEntries = currentMap.entrySet();
 				Iterator<Map.Entry<String, Integer>> iteratorCurrent = currentMapSetOfEntries.iterator();
-				Map.Entry<String, Integer> entryCurrent = iteratorCurrent.next();
-				String keyCurrent = entryCurrent.getKey();
-				// Iterate through reference Map until it reaches the date of the start of the
-				// current map
-				// Add extra data to a new Map
-				LinkedHashMap<String, Integer> newMap = new LinkedHashMap<>();
-				while (iteratorRef.hasNext()) {
-					Map.Entry<String, Integer> entryRef = iteratorRef.next();
-					String keyRef = entryRef.getKey();
-					if (!(keyCurrent.equalsIgnoreCase(keyRef))) {
-						newMap.put(keyRef, null);
-					} else {
-						break;
+				String keyCurrent;
+				try {
+					Map.Entry<String, Integer> entryCurrent = iteratorCurrent.next();
+					keyCurrent = entryCurrent.getKey();
+
+					// Iterate through reference Map until it reaches the date of the start of the
+					// current map
+					// Add extra data to a new Map
+					LinkedHashMap<String, Integer> newMap = new LinkedHashMap<>();
+					while (iteratorRef.hasNext()) {
+						Map.Entry<String, Integer> entryRef = iteratorRef.next();
+						String keyRef = entryRef.getKey();
+						if (!(keyCurrent.equalsIgnoreCase(keyRef))) {
+							newMap.put(keyRef, null);
+						} else {
+							break;
+						}
 					}
-				}
-				// Add original data to the new Map
-				newMap.put(entryCurrent.getKey(), entryCurrent.getValue());
-				while (iteratorCurrent.hasNext()) {
-					entryCurrent = iteratorCurrent.next();
+					// Add original data to the new Map
 					newMap.put(entryCurrent.getKey(), entryCurrent.getValue());
+					while (iteratorCurrent.hasNext()) {
+						entryCurrent = iteratorCurrent.next();
+						newMap.put(entryCurrent.getKey(), entryCurrent.getValue());
+					}
+					formattedData.add(newMap);
+				} catch (NoSuchElementException nse) {
+					System.out.println("No data");
+					return new ArrayList<LinkedHashMap<String, Integer>>();
 				}
-				formattedData.add(newMap);
 			}
 		}
 		return formattedData;

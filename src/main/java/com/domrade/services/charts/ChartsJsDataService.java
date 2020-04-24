@@ -30,6 +30,7 @@ import com.domrade.interfaces.charts.ChartsJsDataServiceLocal;
 import com.domrade.interfaces.data.DataProcessingServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
 import com.domrade.rest.request.RequestType;
+import com.domrade.rest.request.UsStateAndCounty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -120,6 +121,37 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 				dataArrayList = dataProcessingService.calculateDailyIncrease(m);
 			}
 			String label = locations[index].getCombinedCountryAndState();
+			ChartsJsDataSet dataSet = new ChartsJsDataSet(dataArrayList, label);
+			arrayList.add(dataSet);
+			index++;
+		}
+		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(arrayList, labelsArray);
+
+		return chartObject;
+	}
+
+	// Handle request for CombinedLocation where countryRegion/provinceState are
+	// combined to one string in the request
+	@Override
+	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForUsLocations(
+			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, UsStateAndCounty[] locations,
+			RequestType requestType) {
+
+		ArrayList<Integer> dataArrayList = new ArrayList<>();
+		int[] dataArray;
+		int index = 0;
+		// The same chart labels apply to all entries in listOfCountries
+		String[] labelsArray = this.getChartsJsLabels(listOfCountries.get(0));
+		ArrayList<AbstractChartsJsDataSet> arrayList = new ArrayList<>();
+		for (Map m : listOfCountries) {
+			// dataArrayList = formatDataService.getDataArrayList(m);
+			if (requestType == RequestType.RAW_DATA) {
+				dataArrayList = formatDataService.getDataArrayList(m);
+			} else if (requestType == RequestType.DAILY_INCREASE) {
+				dataArrayList = dataProcessingService.calculateDailyIncrease(m);
+			}
+			String label = locations[index].getCounty().equalsIgnoreCase("") ? locations[index].getState()
+					: locations[index].getCounty();
 			ChartsJsDataSet dataSet = new ChartsJsDataSet(dataArrayList, label);
 			arrayList.add(dataSet);
 			index++;

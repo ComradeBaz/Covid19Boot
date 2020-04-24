@@ -1,5 +1,6 @@
 package com.domrade.services.cache;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -299,6 +300,8 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 		List<String> states = januaryService.getAllStates();
 		LinkedHashMap<String, LinkedHashMap<String, String>> mapOfMaps = new LinkedHashMap<>();
 		LinkedHashMap<String, String> refMap = new LinkedHashMap<>();
+		List<String> counties = new ArrayList<>();
+		LinkedHashMap<String, List<String>> statesAndCounties = new LinkedHashMap<>();
 
 		LinkedHashMap<String, String> countyAndId = new LinkedHashMap<>();
 		String currentState = "";
@@ -306,6 +309,7 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 		for (String s : states) {
 			currentState = s;
 			List<USJanuary> usJanuary = januaryService.getEntryByProvenceState(s);
+			// statesAndCounties = new LinkedHashMap<>();
 
 			for (USJanuary usj : usJanuary) {
 				long id = usj.getId();
@@ -317,8 +321,15 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 					county = s;
 				}
 				countyAndId.put(county, sid);
+				counties.add(county);
 			} // end of entity loop
 				// refMap.putAll(countyAndId);
+			List<String> countiesToAdd = new ArrayList<>();
+			for (String st : counties) {
+				countiesToAdd.add(st);
+			}
+			counties.clear();
+			statesAndCounties.put(s, countiesToAdd);
 			LinkedHashMap<String, String> mapToAdd = new LinkedHashMap<>();
 			for (Map.Entry<String, String> entry : countyAndId.entrySet()) {
 				mapToAdd.put(entry.getKey(), entry.getValue());
@@ -327,7 +338,28 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 			countyAndId.clear();
 		} // end of state loop
 		return mapOfMaps;
-
 	}
 
+	@Override
+	public LinkedHashMap<String, ArrayList<String>> getCountiesByState(
+			LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties) {
+		String state = "";
+		String county = "";
+		LinkedHashMap<String, ArrayList<String>> returnMap = new LinkedHashMap<>();
+		ArrayList<String> counties = new ArrayList<>();
+		for (Map.Entry<String, LinkedHashMap<String, String>> entry : statesAndCounties.entrySet()) {
+			state = entry.getKey();
+			for (Map.Entry<String, String> e : entry.getValue().entrySet()) {
+				county = e.getKey();
+				counties.add(county);
+			}
+			ArrayList<String> listToAdd = new ArrayList<>();
+			for (String s : counties) {
+				listToAdd.add(s);
+			}
+			returnMap.put(state, listToAdd);
+			counties.clear();
+		}
+		return returnMap;
+	}
 }

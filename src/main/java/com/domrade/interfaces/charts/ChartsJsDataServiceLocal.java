@@ -17,6 +17,7 @@ import com.domrade.chartjs.chart.data.Location;
 import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
 import com.domrade.entity.EntityType;
 import com.domrade.rest.request.RequestType;
+import com.domrade.rest.request.UsStateAndCounty;
 
 /**
  *
@@ -49,5 +50,9 @@ public interface ChartsJsDataServiceLocal {
 
 	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForLocations(
 			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, LocationCombinedCountryAndState[] locations,
+			RequestType requestType);
+
+	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForUsLocations(
+			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, UsStateAndCounty[] locations,
 			RequestType requestType);
 }

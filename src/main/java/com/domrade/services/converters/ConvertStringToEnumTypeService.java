@@ -42,6 +42,10 @@ public class ConvertStringToEnumTypeService implements ConvertStringToEnumTypeSe
 			return EntityType.CONFIRMED;
 		case "deaths":
 			return EntityType.DEATHS;
+		case "us_confirmed":
+			return EntityType.US_CONFIRMED;
+		case "us_deaths":
+			return EntityType.US_DEATHS;
 		default:
 			returnType = EntityType.CONFIRMED;
 		}

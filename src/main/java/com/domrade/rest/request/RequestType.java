@@ -10,7 +10,5 @@ package com.domrade.rest.request;
  * @author David
  */
 public enum RequestType {
-    RAW_DATA,
-    DAILY_INCREASE,
-    DAILY_INCREASE_PERCENT;
+	RAW_DATA, DAILY_INCREASE, DAILY_INCREASE_PERCENT;
 }

@@ -8,6 +8,7 @@ package com.domrade.services.data;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,18 @@ public class DataProcessingService implements DataProcessingServiceLocal {
 	// public LinkedHashMap<String, Integer> calculateDailyIncrease(Map type) {
 	public <T> ArrayList<Integer> calculateDailyIncrease(T type) {
 		LinkedHashMap<String, Integer> map = mapper.convertValue(type, LinkedHashMap.class);
-		Map.Entry<String, Integer> firstEntry = map.entrySet().iterator().next();
-		String key = firstEntry.getKey();
 		int lastEntryValue = 0;
 		int currentEntryValue;
+		String key;
+		try {
+			Map.Entry<String, Integer> firstEntry = map.entrySet().iterator().next();
+			key = firstEntry.getKey();
+			lastEntryValue = 0;
+			// int currentEntryValue;
+		} catch (NoSuchElementException npe) {
+			System.out.println("No data");
+			return new ArrayList<Integer>();
+		}
 
 		// int[] dataArray = new int[map.size()];
 		ArrayList<Integer> returnList = new ArrayList<>();

@@ -5,6 +5,7 @@
  */
 package com.domrade.interfaces.local;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -61,5 +62,7 @@ public interface CachedDataLocal {
 	public List<String> getUsStates();
 
 	public String getCountyIdByStateAndCounty(String state, String county);
+
+	public ArrayList<String> getCountiesByState(String state);
 
 }
