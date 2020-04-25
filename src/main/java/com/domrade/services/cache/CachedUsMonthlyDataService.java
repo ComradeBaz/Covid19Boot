@@ -362,4 +362,18 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 		}
 		return returnMap;
 	}
+
+	// Get the latest date for which there is data in the data base
+	// This will be used to create empty datasets for locations which have no
+	// cases/deaths
+	// { date: date, value 0 }
+	@Override
+	public String getLastDateOfDataSets(LinkedHashMap<String, Integer> aDataSet) {
+		String key = "";
+		for (Map.Entry<String, Integer> mapEntry : aDataSet.entrySet()) {
+			key = mapEntry.getKey();
+		}
+		return key;
+
+	}
 }

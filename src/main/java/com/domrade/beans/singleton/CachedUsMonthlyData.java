@@ -1,7 +1,10 @@
 package com.domrade.beans.singleton;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.domrade.entity.EntityType;
 import com.domrade.interfaces.cache.CachedUsMonthlyDataServiceLocal;
 import com.domrade.interfaces.local.CachedDataLocal;
+import com.domrade.interfaces.local.CachedGenericMonthlyDataLocal;
 import com.domrade.interfaces.local.CachedUsMonthlyDataLocal;
 import com.domrade.rest.request.UsStateAndCounty;
 
@@ -23,6 +27,9 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	private CachedUsMonthlyDataServiceLocal usCachedMonthlyDataService;
 
 	@Autowired
+	private CachedGenericMonthlyDataLocal cachedGenericMonthlyData;
+
+	@Autowired
 	private CachedDataLocal cachedData;
 
 	// Confirmed
@@ -31,6 +38,10 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	// Deaths
 	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsData = new LinkedHashMap<>();
 	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsData = new LinkedHashMap<>();
+	LinkedHashMap<String, Integer> emptyDataSet = new LinkedHashMap<>();
+
+	// Default DataSets
+	private String lastKnownDate;
 
 	public CachedUsMonthlyData() {
 		// TODO Auto-generated constructor stub
@@ -43,6 +54,11 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 
 		usStateDeathsData = usCachedMonthlyDataService.getUsDataDeaths("state");
 		usCountyDeathsData = usCachedMonthlyDataService.getUsDataDeaths("county");
+
+		this.setLastDateOfDataSets();
+		this.setEmptyDataSet();
+		cachedGenericMonthlyData.setLastKnownDate(lastKnownDate);
+		cachedGenericMonthlyData.setEmptyDataSet(emptyDataSet);
 	}
 
 	public LinkedHashMap<String, LinkedHashMap<String, Integer>> getUsStateData() {
@@ -118,22 +134,73 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 
 			if (entityType == EntityType.US_CONFIRMED) {
 				if (level.equalsIgnoreCase("state")) {
-					returnList.add(this.getUsDataByState(state));
+					LinkedHashMap<String, Integer> dataSet = this.getUsDataByState(state);
+					if (dataSet.size() > 0) {
+						returnList.add(dataSet);
+					} else {
+						returnList.add(emptyDataSet);
+					}
 				} else {
 					String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
-					returnList.add(this.getConfirmedCountyDataByCountyId(countyId));
+					LinkedHashMap<String, Integer> dataSet = this.getConfirmedCountyDataByCountyId(countyId);
+					if (dataSet.size() > 0) {
+						returnList.add(dataSet);
+					} else {
+						returnList.add(emptyDataSet);
+					}
 				}
 			} else { // EntityType.US_DEATHS
 				if (level.equalsIgnoreCase("state")) {
-					returnList.add(this.getUsDeathsByState(state));
+					LinkedHashMap<String, Integer> dataSet = this.getUsDeathsByState(state);
+					if (dataSet.size() > 0) {
+						returnList.add(dataSet);
+					} else {
+						returnList.add(emptyDataSet);
+					}
 				} else {
 					String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
-					returnList.add(this.getDeathsCountyDataByCountyId(countyId));
+					LinkedHashMap<String, Integer> dataSet = this.getDeathsCountyDataByCountyId(countyId);
+					if (dataSet.size() > 0) {
+						returnList.add(dataSet);
+					} else {
+						returnList.add(emptyDataSet);
+					}
 				}
 			}
 
 		}
 		return returnList;
+	}
+
+	// Get the latest date for which there is data in the data base
+	// This will be used to create empty datasets for locations which have no
+	// cases/deaths
+	// { date: date, value 0 }
+	public void setLastDateOfDataSets() {
+		Iterator<Map.Entry<String, LinkedHashMap<String, Integer>>> iterator = this.usStateData.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, LinkedHashMap<String, Integer>> entry = iterator.next();
+			if (entry.getValue().size() > 0) {
+				this.lastKnownDate = usCachedMonthlyDataService.getLastDateOfDataSets(entry.getValue());
+				break;
+			}
+		}
+
+	}
+
+	public String getLastKnownDate() {
+		return lastKnownDate;
+	}
+
+	public void setEmptyDataSet() {
+		LinkedHashMap<String, Integer> dataSet = new LinkedHashMap<>();
+		dataSet.put(this.lastKnownDate, 0);
+		this.emptyDataSet = dataSet;
+	}
+
+	@Override
+	public LinkedHashMap<String, Integer> getEmptyDataSet() {
+		return emptyDataSet;
 	}
 
 }

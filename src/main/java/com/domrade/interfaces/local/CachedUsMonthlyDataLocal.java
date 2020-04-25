@@ -27,4 +27,6 @@ public interface CachedUsMonthlyDataLocal {
 	public ArrayList<LinkedHashMap<String, Integer>> formatDataForMultipleUsLocations(
 			UsStateAndCounty[] statesAndCounties, String level, EntityType entityType);
 
+	public LinkedHashMap<String, Integer> getEmptyDataSet();
+
 }

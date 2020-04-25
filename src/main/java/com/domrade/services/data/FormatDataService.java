@@ -26,6 +26,7 @@ import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
+import com.domrade.interfaces.cache.CachedGenericMonthlyDataServiceLocal;
 import com.domrade.interfaces.cache.CachedMonthlyDataServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
 import com.domrade.interfaces.months.confirmed.AprilServiceLocal;
@@ -74,6 +75,9 @@ public class FormatDataService implements FormatDataServiceLocal {
 	@Autowired
 	private CachedMonthlyDataServiceLocal cachedMonthlyDataService;
 
+	@Autowired
+	private CachedGenericMonthlyDataServiceLocal genericMonthlyDataService;
+
 	@Override
 	public <T> LinkedHashMap<String, Integer> removeLocationDetails(T type) {
 		LinkedHashMap<String, Integer> map = mapper.convertValue(type, LinkedHashMap.class);
@@ -118,7 +122,11 @@ public class FormatDataService implements FormatDataServiceLocal {
 				returnValue.put(mapEntry.getKey(), mapEntry.getValue());
 			}
 		}
-		return returnValue;
+		if (returnValue.size() > 0) {
+			return returnValue;
+		} else {
+			return genericMonthlyDataService.getEmptyDataSet();
+		}
 	}
 
 	// Get the values for the days of the month for a given entity
@@ -313,7 +321,7 @@ public class FormatDataService implements FormatDataServiceLocal {
 					formattedData.add(newMap);
 				} catch (NoSuchElementException nse) {
 					System.out.println("No data");
-					return new ArrayList<LinkedHashMap<String, Integer>>();
+					formattedData.add(genericMonthlyDataService.getEmptyDataSet());
 				}
 			}
 		}

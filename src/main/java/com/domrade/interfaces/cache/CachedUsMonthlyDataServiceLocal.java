@@ -17,4 +17,6 @@ public interface CachedUsMonthlyDataServiceLocal {
 	public LinkedHashMap<String, ArrayList<String>> getCountiesByState(
 			LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties);
 
+	public String getLastDateOfDataSets(LinkedHashMap<String, Integer> aDataSet);
+
 }
