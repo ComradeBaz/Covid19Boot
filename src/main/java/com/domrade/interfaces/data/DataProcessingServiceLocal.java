@@ -9,6 +9,10 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
+import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
+import com.domrade.chartjs.chart.data.datasets.ChartsJsDataSet;
+import com.domrade.rest.request.UsStateAndCounty;
+
 /**
  *
  * @author David
@@ -21,5 +25,11 @@ public interface DataProcessingServiceLocal {
 	public <T> ArrayList<Integer> calculateDailyIncrease(T type);
 
 	public <T> ArrayList<Float> calculateDailyIncreasePercentage(T type);
+
+	public ArrayList<ChartsJsDataSet> getOriginalOrder(ArrayList<ChartsJsDataSet> arrayList,
+			LocationCombinedCountryAndState[] locationArray);
+
+	public ArrayList<ChartsJsDataSet> getOriginalOrderForUsLocations(ArrayList<ChartsJsDataSet> arrayList,
+			UsStateAndCounty[] locationArray);
 
 }

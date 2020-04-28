@@ -18,7 +18,6 @@ import com.domrade.chartjs.chart.data.ChartsJsDataMultipleDataSets;
 import com.domrade.chartjs.chart.data.ChartsJsDataSingleDataSet;
 import com.domrade.chartjs.chart.data.Location;
 import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
-import com.domrade.chartjs.chart.data.datasets.AbstractChartsJsDataSet;
 import com.domrade.chartjs.chart.data.datasets.ChartsJsDataSet;
 import com.domrade.chartjs.chart.options.ChartsJsOptions;
 import com.domrade.chartjs.chart.options.scales.Scales;
@@ -80,7 +79,7 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 		int index = 0;
 		// The same chart labels apply to all entries in listOfCountries
 		String[] labelsArray = this.getChartsJsLabels(listOfCountries.get(0));
-		ArrayList<AbstractChartsJsDataSet> arrayList = new ArrayList<>();
+		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
 		for (Map m : listOfCountries) {
 			// dataArrayList = formatDataService.getDataArrayList(m);
 			if (requestType == RequestType.RAW_DATA) {
@@ -105,14 +104,14 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 	@Override
 	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForLocations(
 			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, LocationCombinedCountryAndState[] locations,
-			RequestType requestType) {
+			RequestType requestType, LocationCombinedCountryAndState[] originalOrder) {
 
 		ArrayList<Integer> dataArrayList = new ArrayList<>();
 		int[] dataArray;
 		int index = 0;
 		// The same chart labels apply to all entries in listOfCountries
 		String[] labelsArray = this.getChartsJsLabels(listOfCountries.get(0));
-		ArrayList<AbstractChartsJsDataSet> arrayList = new ArrayList<>();
+		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
 		for (Map m : listOfCountries) {
 			// dataArrayList = formatDataService.getDataArrayList(m);
 			if (requestType == RequestType.RAW_DATA) {
@@ -125,7 +124,9 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 			arrayList.add(dataSet);
 			index++;
 		}
-		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(arrayList, labelsArray);
+
+		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(
+				dataProcessingService.getOriginalOrder(arrayList, originalOrder), labelsArray);
 
 		return chartObject;
 	}
@@ -135,14 +136,14 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 	@Override
 	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForUsLocations(
 			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, UsStateAndCounty[] locations,
-			RequestType requestType) {
+			RequestType requestType, UsStateAndCounty statesAndCounties[]) {
 
 		ArrayList<Integer> dataArrayList = new ArrayList<>();
 		int[] dataArray;
 		int index = 0;
 		// The same chart labels apply to all entries in listOfCountries
 		String[] labelsArray = this.getChartsJsLabels(listOfCountries.get(0));
-		ArrayList<AbstractChartsJsDataSet> arrayList = new ArrayList<>();
+		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
 		for (Map m : listOfCountries) {
 			// dataArrayList = formatDataService.getDataArrayList(m);
 			if (requestType == RequestType.RAW_DATA) {
@@ -156,7 +157,8 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 			arrayList.add(dataSet);
 			index++;
 		}
-		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(arrayList, labelsArray);
+		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(
+				dataProcessingService.getOriginalOrderForUsLocations(arrayList, statesAndCounties), labelsArray);
 
 		return chartObject;
 	}
@@ -192,7 +194,7 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 
 		ChartsJsDataSet dataSetOne = new ChartsJsDataSet(dataArrayList, "Confirmed Cases");
 		ChartsJsDataSet dataSetTwo = new ChartsJsDataSet(dailyIncreaseList, "Daily Increase");
-		ArrayList<AbstractChartsJsDataSet> arrayList = new ArrayList<>();
+		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
 		arrayList.add(dataSetOne);
 		arrayList.add(dataSetTwo);
 

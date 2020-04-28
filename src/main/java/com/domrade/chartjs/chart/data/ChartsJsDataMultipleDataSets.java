@@ -5,39 +5,40 @@
  */
 package com.domrade.chartjs.chart.data;
 
-import com.domrade.chartjs.chart.data.datasets.AbstractChartsJsDataSet;
 import java.util.ArrayList;
+
+import com.domrade.chartjs.chart.data.datasets.AbstractChartsJsDataSet;
+import com.domrade.chartjs.chart.data.datasets.ChartsJsDataSet;
 
 /**
  *
  * @author David
  */
 public class ChartsJsDataMultipleDataSets extends AbstractChartsJsDataSet {
-    
-    // datasets includes data array and the label for each array
-    private ArrayList<AbstractChartsJsDataSet> dataSets;
-    private String[] chartLabels;
 
-    public ChartsJsDataMultipleDataSets(ArrayList<AbstractChartsJsDataSet> dataSets, String[] chartLabels) {
-        this.dataSets = dataSets;
-        this.chartLabels = chartLabels;
-    }
+	// datasets includes data array and the label for each array
+	private ArrayList<ChartsJsDataSet> dataSets;
+	private String[] chartLabels;
 
-    public ArrayList<AbstractChartsJsDataSet> getDataSets() {
-        return dataSets;
-    }
+	public ChartsJsDataMultipleDataSets(ArrayList<ChartsJsDataSet> dataSets, String[] chartLabels) {
+		this.dataSets = dataSets;
+		this.chartLabels = chartLabels;
+	}
 
-    public void setDataSets(ArrayList<AbstractChartsJsDataSet> dataSets) {
-        this.dataSets = dataSets;
-    }
+	public ArrayList<ChartsJsDataSet> getDataSets() {
+		return dataSets;
+	}
 
-    public String[] getChartLabels() {
-        return chartLabels;
-    }
+	public void setDataSets(ArrayList<ChartsJsDataSet> dataSets) {
+		this.dataSets = dataSets;
+	}
 
-    public void setChartLabels(String[] chartLabels) {
-        this.chartLabels = chartLabels;
-    }
+	public String[] getChartLabels() {
+		return chartLabels;
+	}
 
-    
+	public void setChartLabels(String[] chartLabels) {
+		this.chartLabels = chartLabels;
+	}
+
 }

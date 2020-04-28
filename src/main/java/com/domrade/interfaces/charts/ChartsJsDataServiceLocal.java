@@ -50,9 +50,9 @@ public interface ChartsJsDataServiceLocal {
 
 	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForLocations(
 			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, LocationCombinedCountryAndState[] locations,
-			RequestType requestType);
+			RequestType requestType, LocationCombinedCountryAndState[] originalOrder);
 
 	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForUsLocations(
 			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, UsStateAndCounty[] locations,
-			RequestType requestType);
+			RequestType requestType, UsStateAndCounty statesAndCounties[]);
 }

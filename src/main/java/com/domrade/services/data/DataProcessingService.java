@@ -12,7 +12,10 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
+import com.domrade.chartjs.chart.data.datasets.ChartsJsDataSet;
 import com.domrade.interfaces.data.DataProcessingServiceLocal;
+import com.domrade.rest.request.UsStateAndCounty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -150,5 +153,46 @@ public class DataProcessingService implements DataProcessingServiceLocal {
 
 	public float calculateDailyIncreaseAsPercent(float total, float dailyIncrease) {
 		return (dailyIncrease / total) * 100;
+	}
+
+	@Override
+	public ArrayList<ChartsJsDataSet> getOriginalOrder(ArrayList<ChartsJsDataSet> arrayList,
+			LocationCombinedCountryAndState[] locationArray) {
+
+		ArrayList<ChartsJsDataSet> returnList = new ArrayList<>();
+
+		for (LocationCombinedCountryAndState l : locationArray) {
+			String location = l.getCombinedCountryAndState();
+			for (ChartsJsDataSet dataSet : arrayList) {
+				if (dataSet.getLabel().equalsIgnoreCase(location)) {
+					returnList.add(dataSet);
+				}
+			}
+		}
+
+		return returnList;
+
+	}
+
+	@Override
+	public ArrayList<ChartsJsDataSet> getOriginalOrderForUsLocations(ArrayList<ChartsJsDataSet> arrayList,
+			UsStateAndCounty[] locationArray) {
+
+		ArrayList<ChartsJsDataSet> returnList = new ArrayList<>();
+
+		for (UsStateAndCounty l : locationArray) {
+			String state = l.getState();
+			String county = l.getCounty();
+			for (ChartsJsDataSet dataSet : arrayList) {
+				if (dataSet.getLabel().equalsIgnoreCase(county)) {
+					returnList.add(dataSet);
+				} else if (dataSet.getLabel().equalsIgnoreCase(state)) {
+					returnList.add(dataSet);
+				}
+			}
+		}
+
+		return returnList;
+
 	}
 }

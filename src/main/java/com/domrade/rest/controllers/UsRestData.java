@@ -177,8 +177,8 @@ public class UsRestData {
 		ArrayList<LinkedHashMap<String, Integer>> listOfStatesCounties = formatDataService
 				.formatDataForListOfCountriesDataSet(locationsData, indexOfLongestMap);
 		// returns a json object representing chart data
-		return convertToStringService.convertGenericObjectToJsonArray(chartsJsDataService
-				.getChartsJsDataForUsLocations(listOfStatesCounties, reorderedLocation, requestType));
+		return convertToStringService.convertGenericObjectToJsonArray(chartsJsDataService.getChartsJsDataForUsLocations(
+				listOfStatesCounties, reorderedLocation, requestType, statesAndCounties));
 	}
 
 }

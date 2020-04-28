@@ -151,9 +151,10 @@ public class RestData {
 		// Standardise the data by making the data sets for each country the same lenght
 		ArrayList<LinkedHashMap<String, Integer>> listOfCountries = formatDataService
 				.formatDataForListOfCountriesDataSet(locationsData, indexOfLongestMap);
+
 		// returns a json object representing chart data
-		return convertToStringService.convertGenericObjectToJsonArray(
-				chartsJsDataService.getChartsJsDataForLocations(listOfCountries, reorderedLocation, requestType));
+		return convertToStringService.convertGenericObjectToJsonArray(chartsJsDataService
+				.getChartsJsDataForLocations(listOfCountries, reorderedLocation, requestType, locationArray));
 	}
 
 	@PostMapping("/getDataByCountryAndProvince")
