@@ -22,16 +22,20 @@ import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
+import com.domrade.entity.implementation.May;
+import com.domrade.entity.implementation.MayDeaths;
 import com.domrade.interfaces.cache.CachedMonthlyDataServiceLocal;
 import com.domrade.interfaces.local.CachedMonthlyDataLocal;
 import com.domrade.interfaces.months.confirmed.AprilServiceLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.JanuaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.MarchServiceLocal;
+import com.domrade.interfaces.months.confirmed.MayServiceLocal;
 import com.domrade.interfaces.months.deaths.AprilDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.FebruaryDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.JanuaryDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.MarchDeathsServiceLocal;
+import com.domrade.interfaces.months.deaths.MayDeathsServiceLocal;
 
 /**
  *
@@ -54,6 +58,9 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	private AprilServiceLocal aprilService;
 
 	@Autowired
+	private MayServiceLocal mayService;
+
+	@Autowired
 	private CachedMonthlyDataServiceLocal cachedMonthlyDataService;
 
 	@Autowired
@@ -68,15 +75,20 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	@Autowired
 	private AprilDeathsServiceLocal aprilDeathsService;
 
+	@Autowired
+	private MayDeathsServiceLocal mayDeathsService;
+
 	private List<January> januaryConfirmed;
 	private List<February> februaryConfirmed;
 	private List<March> marchConfirmed;
 	private List<April> aprilConfirmed;
+	private List<May> mayConfirmed;
 
 	private List<JanuaryDeaths> januaryDeaths;
 	private List<FebruaryDeaths> februaryDeaths;
 	private List<MarchDeaths> marchDeaths;
 	private List<AprilDeaths> aprilDeaths;
+	private List<MayDeaths> mayDeaths;
 
 	// Map with location and id
 	// service will get an id based on location from this map
@@ -97,12 +109,14 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		februaryConfirmed = februaryService.getAllFebruaryEntries();
 		marchConfirmed = marchService.getAllMarchEntries();
 		aprilConfirmed = aprilService.getAllAprilEntries();
+		mayConfirmed = mayService.getAllMayEntries();
 
 		// Deaths
 		januaryDeaths = januaryDeathsService.getAllJanuaryDeathsEntries();
 		februaryDeaths = februaryDeathsService.getAllFebruaryDeathsEntries();
 		marchDeaths = marchDeathsService.getAllMarchDeathsEntries();
 		aprilDeaths = aprilDeathsService.getAllAprilDeathsEntries();
+		mayDeaths = mayDeathsService.getAllMayDeathsEntries();
 
 		// Maps to entities
 		locationsAndIds = cachedMonthlyDataService.getJanuaryConfirmedLocationsAndIds(januaryConfirmed);
@@ -181,6 +195,22 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		this.aprilDeaths = aprilDeaths;
 	}
 
+	public List<May> getMayConfirmed() {
+		return mayConfirmed;
+	}
+
+	public void setMayConfirmed(List<May> mayConfirmed) {
+		this.mayConfirmed = mayConfirmed;
+	}
+
+	public List<MayDeaths> getMayDeaths() {
+		return mayDeaths;
+	}
+
+	public void setMayDeaths(List<MayDeaths> mayDeaths) {
+		this.mayDeaths = mayDeaths;
+	}
+
 	public Map<String, Long> getDeathLocationsAndIds() {
 		return deathLocationsAndIds;
 	}
@@ -238,6 +268,18 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	}
 
 	@Override
+	public May getMayEntityByLocation(String location) {
+		Long index = locationsAndIds.get(location);
+		for (May m : mayConfirmed) {
+			if (index == m.getId()) {
+				return m;
+			}
+		}
+		// Return the first entry
+		return mayConfirmed.get(0);
+	}
+
+	@Override
 	public JanuaryDeaths getJanuaryDeathByLocation(String location) {
 		Long index = deathLocationsAndIds.get(location);
 		for (JanuaryDeaths j : januaryDeaths) {
@@ -283,5 +325,17 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		}
 		// Return the first entry
 		return aprilDeaths.get(0);
+	}
+
+	@Override
+	public MayDeaths getMayDeathsByLocation(String location) {
+		Long index = deathLocationsAndIds.get(location);
+		for (MayDeaths m : mayDeaths) {
+			if (index == m.getId()) {
+				return m;
+			}
+		}
+		// Return the first entry
+		return mayDeaths.get(0);
 	}
 }

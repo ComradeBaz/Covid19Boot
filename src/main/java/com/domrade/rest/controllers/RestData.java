@@ -33,7 +33,6 @@ import com.domrade.interfaces.converters.ConvertStringToEnumTypeServiceLocal;
 import com.domrade.interfaces.converters.ConvertToObjectServiceLocal;
 import com.domrade.interfaces.converters.ConvertToStringServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
-import com.domrade.interfaces.data.FormatUsDataServiceLocal;
 import com.domrade.interfaces.local.CachedDataLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.MarchServiceLocal;
@@ -42,7 +41,7 @@ import com.domrade.rest.request.RequestType;
 
 /**
  *
- * @author David URL: http://localhost:8080/Covid19/rest/examples/helloWorld
+ * @author David
  */
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -71,9 +70,6 @@ public class RestData {
 
 	@Autowired
 	private ConvertStringToEnumTypeServiceLocal convertStringToEnumTypeService;
-
-	@Autowired
-	private FormatUsDataServiceLocal formatUsDataService;
 
 	@GetMapping("/getCountries")
 	@Produces(MediaType.APPLICATION_JSON)

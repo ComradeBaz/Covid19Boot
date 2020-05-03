@@ -10,18 +10,20 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@NamedQueries({ @NamedQuery(name = "May.findAllEntries", query = "SELECT m FROM May m"),
-		@NamedQuery(name = "May.findByCountryRegion", query = "SELECT m FROM May m WHERE m.countryRegion =:countryRegion") })
+@NamedQueries({ @NamedQuery(name = "USMayDeaths.findAllEntries", query = "SELECT m FROM USMayDeaths m"),
+		@NamedQuery(name = "USMayDeaths.findByProvenceState", query = "SELECT m FROM USMayDeaths m WHERE m.provenceState =:provenceState"),
+		@NamedQuery(name = "USMayDeaths.findByCountryRegionProvinceState", query = "SELECT m FROM USMayDeaths m WHERE m.countryRegion =:countryRegion AND m.provenceState =:provenceState"),
+		@NamedQuery(name = "USMayDeaths.findByCountryRegion", query = "SELECT m FROM USMayDeaths m WHERE m.countryRegion =:countryRegion") })
 @Entity
-@Table(name = "may")
-public class May implements Serializable {
+@Table(name = "us_may_deaths")
+public class USMayDeaths implements Serializable {
 
-	public May() {
+	public USMayDeaths() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public May(long id, String provenceState, String countryRegion, String latitude, String longitude, int _1, int _2,
-			int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13, int _14,
+	public USMayDeaths(long id, String provenceState, String countryRegion, String latitude, String longitude, int _1,
+			int _2, int _3, int _4, int _5, int _6, int _7, int _8, int _9, int _10, int _11, int _12, int _13, int _14,
 			int _15, int _16, int _17, int _18, int _19, int _20, int _21, int _22, int _23, int _24, int _25, int _26,
 			int _27, int _28, int _29, int _30, int _31) {
 
@@ -467,7 +469,7 @@ public class May implements Serializable {
 		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
-		final May other = (May) obj;
+		final USMayDeaths other = (USMayDeaths) obj;
 		return Objects.equals(getId(), other.getId()) && Objects.equals(this.countryRegion, other.countryRegion)
 				&& Objects.equals(this.provenceState, other.provenceState);
 	}
@@ -484,12 +486,13 @@ public class May implements Serializable {
 
 	@Override
 	public String toString() {
-		return "May{" + "provenceState=" + provenceState + ", countryRegion=" + countryRegion + ", may01=" + may01
-				+ ", may02=" + may02 + ", may03=" + may03 + ", may04=" + may04 + ", may05=" + may05 + ", may06=" + may06
-				+ ", may07=" + may07 + ", may08=" + may08 + ", may09=" + may09 + ", may10=" + may10 + ", may11=" + may11
-				+ ", may12=" + may12 + ", may13=" + may13 + ", may14=" + may14 + ", may15=" + may15 + ", may16=" + may16
-				+ ", may17=" + may17 + ", may18=" + may18 + ", may19=" + may19 + ", may20=" + may20 + ", may21=" + may21
-				+ ", may22=" + may22 + ", may23=" + may23 + ", may24=" + may24 + ", may25=" + may25 + ", may26=" + may26
-				+ ", may27=" + may27 + ", may28=" + may28 + ", may29=" + may29 + '}';
+		return "USMayDeaths{" + "provenceState=" + provenceState + ", countryRegion=" + countryRegion + ", may01="
+				+ may01 + ", may02=" + may02 + ", may03=" + may03 + ", may04=" + may04 + ", may05=" + may05 + ", may06="
+				+ may06 + ", may07=" + may07 + ", may08=" + may08 + ", may09=" + may09 + ", may10=" + may10 + ", may11="
+				+ may11 + ", may12=" + may12 + ", may13=" + may13 + ", may14=" + may14 + ", may15=" + may15 + ", may16="
+				+ may16 + ", may17=" + may17 + ", may18=" + may18 + ", may19=" + may19 + ", may20=" + may20 + ", may21="
+				+ may21 + ", may22=" + may22 + ", may23=" + may23 + ", may24=" + may24 + ", may25=" + may25 + ", may26="
+				+ may26 + ", may27=" + may27 + ", may28=" + may28 + ", may29=" + may29 + '}';
 	}
+
 }

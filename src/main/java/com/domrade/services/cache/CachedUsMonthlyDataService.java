@@ -17,6 +17,8 @@ import com.domrade.entity.implementation.USJanuary;
 import com.domrade.entity.implementation.USJanuaryDeaths;
 import com.domrade.entity.implementation.USMarch;
 import com.domrade.entity.implementation.USMarchDeaths;
+import com.domrade.entity.implementation.USMay;
+import com.domrade.entity.implementation.USMayDeaths;
 import com.domrade.interfaces.cache.CachedUsMonthlyDataServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
 import com.domrade.interfaces.data.FormatUsDataServiceLocal;
@@ -24,10 +26,12 @@ import com.domrade.interfaces.months.confirmed.USAprilServiceLocal;
 import com.domrade.interfaces.months.confirmed.USFebruaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.USJanuaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.USMarchServiceLocal;
+import com.domrade.interfaces.months.confirmed.USMayServiceLocal;
 import com.domrade.interfaces.months.deaths.USAprilDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.USFebruaryDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.USJanuaryDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.USMarchDeathsServiceLocal;
+import com.domrade.interfaces.months.deaths.USMayDeathsServiceLocal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -48,6 +52,9 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 	private USAprilServiceLocal aprilService;
 
 	@Autowired
+	private USMayServiceLocal mayService;
+
+	@Autowired
 	private USJanuaryDeathsServiceLocal januaryDeathsService;
 
 	@Autowired
@@ -58,6 +65,9 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 
 	@Autowired
 	private USAprilDeathsServiceLocal aprilDeathsService;
+
+	@Autowired
+	private USMayDeathsServiceLocal mayDeathsService;
 
 	@Autowired
 	private FormatUsDataServiceLocal formatUsDataService;
@@ -83,6 +93,7 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 		Map<String, Integer> febEntityMap = new LinkedHashMap<>();
 		Map<String, Integer> marEntityMap = new LinkedHashMap<>();
 		Map<String, Integer> aprEntityMap = new LinkedHashMap<>();
+		Map<String, Integer> mayEntityMap = new LinkedHashMap<>();
 
 		Map<String, Map<String, Integer>> combinedUs = new LinkedHashMap<>();
 		Map<String, Integer> combinedLocation = new LinkedHashMap<>();
@@ -101,6 +112,7 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 			List<USFebruary> usFebruary = februaryService.getEntryByProvenceState(s);
 			List<USMarch> usMarch = marchService.getEntryByProvenceState(s);
 			List<USApril> usApril = aprilService.getEntryByProvenceState(s);
+			List<USMay> usMay = mayService.getEntryByProvenceState(s);
 
 			for (USJanuary usj : usJanuary) {
 				long id = usj.getId();
@@ -126,6 +138,14 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 					}
 				}
 				for (USApril usa : usApril) {
+					if (usa.getId() == id) {
+						aprEntityMap = formatUsDataService.removeLocationDetails(usa, entityType);
+						for (Map.Entry<String, Integer> entry : aprEntityMap.entrySet()) {
+							combinedLocation.put(entry.getKey(), entry.getValue());
+						}
+					}
+				}
+				for (USMay usa : usMay) {
 					if (usa.getId() == id) {
 						aprEntityMap = formatUsDataService.removeLocationDetails(usa, entityType);
 						for (Map.Entry<String, Integer> entry : aprEntityMap.entrySet()) {
@@ -196,6 +216,7 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 		Map<String, Integer> febEntityMap = new LinkedHashMap<>();
 		Map<String, Integer> marEntityMap = new LinkedHashMap<>();
 		Map<String, Integer> aprEntityMap = new LinkedHashMap<>();
+		Map<String, Integer> mayEntityMap = new LinkedHashMap<>();
 
 		Map<String, Map<String, Integer>> combinedUs = new LinkedHashMap<>();
 		Map<String, Integer> combinedLocation = new LinkedHashMap<>();
@@ -214,6 +235,7 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 			List<USFebruaryDeaths> usFebruary = februaryDeathsService.getEntryByProvenceState(s);
 			List<USMarchDeaths> usMarch = marchDeathsService.getEntryByProvenceState(s);
 			List<USAprilDeaths> usApril = aprilDeathsService.getEntryByProvenceState(s);
+			List<USMayDeaths> usMay = mayDeathsService.getEntryByProvenceState(s);
 
 			for (USJanuaryDeaths usj : usJanuary) {
 				long id = usj.getId();
@@ -239,6 +261,14 @@ public class CachedUsMonthlyDataService implements CachedUsMonthlyDataServiceLoc
 					}
 				}
 				for (USAprilDeaths usa : usApril) {
+					if (usa.getId() == id) {
+						aprEntityMap = formatUsDataService.removeLocationDetails(usa, entityType);
+						for (Map.Entry<String, Integer> entry : aprEntityMap.entrySet()) {
+							combinedLocation.put(entry.getKey(), entry.getValue());
+						}
+					}
+				}
+				for (USMayDeaths usa : usMay) {
 					if (usa.getId() == id) {
 						aprEntityMap = formatUsDataService.removeLocationDetails(usa, entityType);
 						for (Map.Entry<String, Integer> entry : aprEntityMap.entrySet()) {
