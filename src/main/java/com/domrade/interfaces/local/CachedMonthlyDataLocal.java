@@ -45,4 +45,6 @@ public interface CachedMonthlyDataLocal {
 
 	public MayDeaths getMayDeathsByLocation(String location);
 
+	public void updateCache();
+
 }

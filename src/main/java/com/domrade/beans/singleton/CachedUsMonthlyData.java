@@ -32,12 +32,22 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	@Autowired
 	private CachedDataLocal cachedData;
 
-	// Confirmed
-	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateData = new LinkedHashMap<>();
-	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyData = new LinkedHashMap<>();
+	private boolean cacheOne;
+	private boolean cacheTwo;
+
+	// Confirmed CacheOne
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDataCacheOne = new LinkedHashMap<>();
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDataCacheOne = new LinkedHashMap<>();
 	// Deaths
-	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsData = new LinkedHashMap<>();
-	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsData = new LinkedHashMap<>();
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsDataCacheOne = new LinkedHashMap<>();
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsDataCacheOne = new LinkedHashMap<>();
+
+	// Confirmed CacheTwo
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDataCacheTwo = new LinkedHashMap<>();
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDataCacheTwo = new LinkedHashMap<>();
+	// Deaths
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsDataCacheTwo = new LinkedHashMap<>();
+	LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsDataCacheTwo = new LinkedHashMap<>();
 	LinkedHashMap<String, Integer> emptyDataSet = new LinkedHashMap<>();
 
 	// Default DataSets
@@ -49,78 +59,169 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 
 	@PostConstruct
 	public void init() {
-		usStateData = usCachedMonthlyDataService.getUsDataConfirmed("state");
-		usCountyData = usCachedMonthlyDataService.getUsDataConfirmed("county");
+		usStateDataCacheOne = usCachedMonthlyDataService.getUsDataConfirmed("state");
+		usCountyDataCacheOne = usCachedMonthlyDataService.getUsDataConfirmed("county");
 
-		usStateDeathsData = usCachedMonthlyDataService.getUsDataDeaths("state");
-		usCountyDeathsData = usCachedMonthlyDataService.getUsDataDeaths("county");
+		usStateDeathsDataCacheOne = usCachedMonthlyDataService.getUsDataDeaths("state");
+		usCountyDeathsDataCacheOne = usCachedMonthlyDataService.getUsDataDeaths("county");
 
 		this.setLastDateOfDataSets();
 		this.setEmptyDataSet();
 		cachedGenericMonthlyData.setLastKnownDate(lastKnownDate);
 		cachedGenericMonthlyData.setEmptyDataSet(emptyDataSet);
+		cacheOne = true;
+		cacheTwo = false;
+	}
+
+	@Override
+	public void updateCache() {
+		if (!cacheOne) {
+			usStateDataCacheOne = usCachedMonthlyDataService.getUsDataConfirmed("state");
+			usCountyDataCacheOne = usCachedMonthlyDataService.getUsDataConfirmed("county");
+
+			usStateDeathsDataCacheOne = usCachedMonthlyDataService.getUsDataDeaths("state");
+			usCountyDeathsDataCacheOne = usCachedMonthlyDataService.getUsDataDeaths("county");
+
+			this.setLastDateOfDataSets();
+			this.setEmptyDataSet();
+			cachedGenericMonthlyData.setLastKnownDate(lastKnownDate);
+			cachedGenericMonthlyData.setEmptyDataSet(emptyDataSet);
+			cacheOne = true;
+			cacheTwo = false;
+		} else {
+			usStateDataCacheTwo = usCachedMonthlyDataService.getUsDataConfirmed("state");
+			usCountyDataCacheTwo = usCachedMonthlyDataService.getUsDataConfirmed("county");
+
+			usStateDeathsDataCacheTwo = usCachedMonthlyDataService.getUsDataDeaths("state");
+			usCountyDeathsDataCacheTwo = usCachedMonthlyDataService.getUsDataDeaths("county");
+
+			this.setLastDateOfDataSets();
+			this.setEmptyDataSet();
+			cachedGenericMonthlyData.setLastKnownDate(lastKnownDate);
+			cachedGenericMonthlyData.setEmptyDataSet(emptyDataSet);
+			cacheOne = false;
+			cacheTwo = true;
+		}
 	}
 
 	public LinkedHashMap<String, LinkedHashMap<String, Integer>> getUsStateData() {
-		return usStateData;
+		if (cacheOne) {
+			return usStateDataCacheOne;
+		} else {
+			return usStateDataCacheTwo;
+		}
 	}
 
 	public void setUsStateData(LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateData) {
-		this.usStateData = usStateData;
+		this.usStateDataCacheOne = usStateData;
+	}
+
+	public void setUsStateDataCacheTwo(LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateData) {
+		this.usStateDataCacheTwo = usStateData;
 	}
 
 	public LinkedHashMap<String, LinkedHashMap<String, Integer>> getUsCountyData() {
-		return usCountyData;
+		if (cacheOne) {
+			return usCountyDataCacheOne;
+		} else {
+			return usCountyDataCacheTwo;
+		}
 	}
 
-	public void setUsCountyData(LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyData) {
-		this.usCountyData = usCountyData;
+	public void setUsCountyDataCacheOne(LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyData) {
+		this.usCountyDataCacheOne = usCountyData;
+	}
+
+	public void setUsCountyDataCacheTwo(LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyData) {
+		this.usCountyDataCacheTwo = usCountyData;
 	}
 
 	public LinkedHashMap<String, LinkedHashMap<String, Integer>> getUsStateDeathsData() {
-		return usStateDeathsData;
+		if (cacheOne) {
+			return usStateDeathsDataCacheOne;
+		} else {
+			return usStateDeathsDataCacheTwo;
+		}
 	}
 
-	public void setUsStateDeathsData(LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsData) {
-		this.usStateDeathsData = usStateDeathsData;
+	public void setUsStateDeathsDataCacheOne(LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsData) {
+		this.usStateDeathsDataCacheOne = usStateDeathsData;
+	}
+
+	public void setUsStateDeathsDataCacheTwo(LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDeathsData) {
+		this.usStateDeathsDataCacheTwo = usStateDeathsData;
 	}
 
 	public LinkedHashMap<String, LinkedHashMap<String, Integer>> getUsCountyDeathsData() {
-		return usCountyDeathsData;
+		if (cacheOne) {
+			return usCountyDeathsDataCacheOne;
+		} else {
+			return usCountyDeathsDataCacheTwo;
+		}
 	}
 
-	public void setUsCountyDeathsData(LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsData) {
-		this.usCountyDeathsData = usCountyDeathsData;
+	public void setUsCountyDeathsDataCacheOne(
+			LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsData) {
+		this.usCountyDeathsDataCacheOne = usCountyDeathsData;
+	}
+
+	public void setUsCountyDeathsDataCacheTwo(
+			LinkedHashMap<String, LinkedHashMap<String, Integer>> usCountyDeathsData) {
+		this.usCountyDeathsDataCacheTwo = usCountyDeathsData;
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getUsDataByState(String state) {
-		return usStateData.get(state);
+		if (cacheOne) {
+			return usStateDataCacheOne.get(state);
+		} else {
+			return usStateDataCacheTwo.get(state);
+		}
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getUsDataByCounty(String countyId) {
-		return usStateData.get(countyId);
+		if (cacheOne) {
+			return usStateDataCacheOne.get(countyId);
+		} else {
+			return usStateDataCacheTwo.get(countyId);
+		}
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getUsDeathsByState(String state) {
-		return usStateDeathsData.get(state);
+		if (cacheOne) {
+			return usStateDeathsDataCacheOne.get(state);
+		} else {
+			return usStateDeathsDataCacheTwo.get(state);
+		}
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getUsDeathsByCounty(String countyId) {
-		return usStateDeathsData.get(countyId);
+		if (cacheOne) {
+			return usStateDeathsDataCacheOne.get(countyId);
+		} else {
+			return usStateDeathsDataCacheTwo.get(countyId);
+		}
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getConfirmedCountyDataByCountyId(String id) {
-		return this.usCountyData.get(id);
+		if (cacheOne) {
+			return this.usCountyDataCacheOne.get(id);
+		} else {
+			return this.usCountyDataCacheTwo.get(id);
+		}
 	}
 
 	@Override
 	public LinkedHashMap<String, Integer> getDeathsCountyDataByCountyId(String id) {
-		return this.usCountyDeathsData.get(id);
+		if (cacheOne) {
+			return this.usCountyDeathsDataCacheOne.get(id);
+		} else {
+			return this.usCountyDeathsDataCacheTwo.get(id);
+		}
 	}
 
 	@Override
@@ -177,12 +278,25 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	// cases/deaths
 	// { date: date, value 0 }
 	public void setLastDateOfDataSets() {
-		Iterator<Map.Entry<String, LinkedHashMap<String, Integer>>> iterator = this.usStateData.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, LinkedHashMap<String, Integer>> entry = iterator.next();
-			if (entry.getValue().size() > 0) {
-				this.lastKnownDate = usCachedMonthlyDataService.getLastDateOfDataSets(entry.getValue());
-				break;
+		if (cacheOne) {
+			Iterator<Map.Entry<String, LinkedHashMap<String, Integer>>> iterator = this.usStateDataCacheOne.entrySet()
+					.iterator();
+			while (iterator.hasNext()) {
+				Entry<String, LinkedHashMap<String, Integer>> entry = iterator.next();
+				if (entry.getValue().size() > 0) {
+					this.lastKnownDate = usCachedMonthlyDataService.getLastDateOfDataSets(entry.getValue());
+					break;
+				}
+			}
+		} else {
+			Iterator<Map.Entry<String, LinkedHashMap<String, Integer>>> iterator = this.usStateDataCacheTwo.entrySet()
+					.iterator();
+			while (iterator.hasNext()) {
+				Entry<String, LinkedHashMap<String, Integer>> entry = iterator.next();
+				if (entry.getValue().size() > 0) {
+					this.lastKnownDate = usCachedMonthlyDataService.getLastDateOfDataSets(entry.getValue());
+					break;
+				}
 			}
 		}
 

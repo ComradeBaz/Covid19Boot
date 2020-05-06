@@ -78,25 +78,44 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	@Autowired
 	private MayDeathsServiceLocal mayDeathsService;
 
-	private List<January> januaryConfirmed;
-	private List<February> februaryConfirmed;
-	private List<March> marchConfirmed;
-	private List<April> aprilConfirmed;
-	private List<May> mayConfirmed;
+	private boolean cacheOne;
+	private boolean cacheTwo;
 
-	private List<JanuaryDeaths> januaryDeaths;
-	private List<FebruaryDeaths> februaryDeaths;
-	private List<MarchDeaths> marchDeaths;
-	private List<AprilDeaths> aprilDeaths;
-	private List<MayDeaths> mayDeaths;
+	// cacheOne
+	private List<January> januaryConfirmedCacheOne;
+	private List<February> februaryConfirmedCacheOne;
+	private List<March> marchConfirmedCacheOne;
+	private List<April> aprilConfirmedCacheOne;
+	private List<May> mayConfirmedCacheOne;
+
+	private List<JanuaryDeaths> januaryDeathsCacheOne;
+	private List<FebruaryDeaths> februaryDeathsCacheOne;
+	private List<MarchDeaths> marchDeathsCacheOne;
+	private List<AprilDeaths> aprilDeathsCacheOne;
+	private List<MayDeaths> mayDeathsCacheOne;
+
+	// cacheTwo
+	private List<January> januaryConfirmedCacheTwo;
+	private List<February> februaryConfirmedCacheTwo;
+	private List<March> marchConfirmedCacheTwo;
+	private List<April> aprilConfirmedCacheTwo;
+	private List<May> mayConfirmedCacheTwo;
+
+	private List<JanuaryDeaths> januaryDeathsCacheTwo;
+	private List<FebruaryDeaths> februaryDeathsCacheTwo;
+	private List<MarchDeaths> marchDeathsCacheTwo;
+	private List<AprilDeaths> aprilDeathsCacheTwo;
+	private List<MayDeaths> mayDeathsCacheTwo;
 
 	// Map with location and id
 	// service will get an id based on location from this map
 	// then get the entity from the List<Month> using the id
 	// The same ids are used in all months
-	private Map<String, Long> locationsAndIds;
+	private Map<String, Long> locationsAndIdsCacheOne;
+	private Map<String, Long> locationsAndIdsCacheTwo;
 	// Deaths
-	private Map<String, Long> deathLocationsAndIds;
+	private Map<String, Long> deathLocationsAndIdsCacheOne;
+	private Map<String, Long> deathLocationsAndIdsCacheTwo;
 
 	public CachedMonthlyData() {
 		// no arg constructor
@@ -105,237 +124,492 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	@PostConstruct
 	public void init() {
 		// Confirmed
-		januaryConfirmed = januaryService.getAllJanuaryEntries();
-		februaryConfirmed = februaryService.getAllFebruaryEntries();
-		marchConfirmed = marchService.getAllMarchEntries();
-		aprilConfirmed = aprilService.getAllAprilEntries();
-		mayConfirmed = mayService.getAllMayEntries();
+		januaryConfirmedCacheOne = januaryService.getAllJanuaryEntries();
+		februaryConfirmedCacheOne = februaryService.getAllFebruaryEntries();
+		marchConfirmedCacheOne = marchService.getAllMarchEntries();
+		aprilConfirmedCacheOne = aprilService.getAllAprilEntries();
+		mayConfirmedCacheOne = mayService.getAllMayEntries();
 
 		// Deaths
-		januaryDeaths = januaryDeathsService.getAllJanuaryDeathsEntries();
-		februaryDeaths = februaryDeathsService.getAllFebruaryDeathsEntries();
-		marchDeaths = marchDeathsService.getAllMarchDeathsEntries();
-		aprilDeaths = aprilDeathsService.getAllAprilDeathsEntries();
-		mayDeaths = mayDeathsService.getAllMayDeathsEntries();
+		januaryDeathsCacheOne = januaryDeathsService.getAllJanuaryDeathsEntries();
+		februaryDeathsCacheOne = februaryDeathsService.getAllFebruaryDeathsEntries();
+		marchDeathsCacheOne = marchDeathsService.getAllMarchDeathsEntries();
+		aprilDeathsCacheOne = aprilDeathsService.getAllAprilDeathsEntries();
+		mayDeathsCacheOne = mayDeathsService.getAllMayDeathsEntries();
 
 		// Maps to entities
-		locationsAndIds = cachedMonthlyDataService.getJanuaryConfirmedLocationsAndIds(januaryConfirmed);
-		deathLocationsAndIds = cachedMonthlyDataService.getJanuaryDeathsLocationsAndIds(januaryDeaths);
+		locationsAndIdsCacheOne = cachedMonthlyDataService.getJanuaryConfirmedLocationsAndIds(januaryConfirmedCacheOne);
+		deathLocationsAndIdsCacheOne = cachedMonthlyDataService.getJanuaryDeathsLocationsAndIds(januaryDeathsCacheOne);
+		cacheOne = true;
+		cacheTwo = false;
+	}
+
+	@Override
+	public void updateCache() {
+		if (!cacheOne) {
+			januaryConfirmedCacheOne = januaryService.getAllJanuaryEntries();
+			februaryConfirmedCacheOne = februaryService.getAllFebruaryEntries();
+			marchConfirmedCacheOne = marchService.getAllMarchEntries();
+			aprilConfirmedCacheOne = aprilService.getAllAprilEntries();
+			mayConfirmedCacheOne = mayService.getAllMayEntries();
+
+			// Deaths
+			januaryDeathsCacheOne = januaryDeathsService.getAllJanuaryDeathsEntries();
+			februaryDeathsCacheOne = februaryDeathsService.getAllFebruaryDeathsEntries();
+			marchDeathsCacheOne = marchDeathsService.getAllMarchDeathsEntries();
+			aprilDeathsCacheOne = aprilDeathsService.getAllAprilDeathsEntries();
+			mayDeathsCacheOne = mayDeathsService.getAllMayDeathsEntries();
+
+			// Maps to entities
+			locationsAndIdsCacheOne = cachedMonthlyDataService
+					.getJanuaryConfirmedLocationsAndIds(januaryConfirmedCacheOne);
+			deathLocationsAndIdsCacheOne = cachedMonthlyDataService
+					.getJanuaryDeathsLocationsAndIds(januaryDeathsCacheOne);
+			cacheOne = true;
+			cacheTwo = false;
+		} else {
+			januaryConfirmedCacheTwo = januaryService.getAllJanuaryEntries();
+			februaryConfirmedCacheTwo = februaryService.getAllFebruaryEntries();
+			marchConfirmedCacheTwo = marchService.getAllMarchEntries();
+			aprilConfirmedCacheTwo = aprilService.getAllAprilEntries();
+			mayConfirmedCacheTwo = mayService.getAllMayEntries();
+
+			// Deaths
+			januaryDeathsCacheTwo = januaryDeathsService.getAllJanuaryDeathsEntries();
+			februaryDeathsCacheTwo = februaryDeathsService.getAllFebruaryDeathsEntries();
+			marchDeathsCacheTwo = marchDeathsService.getAllMarchDeathsEntries();
+			aprilDeathsCacheTwo = aprilDeathsService.getAllAprilDeathsEntries();
+			mayDeathsCacheTwo = mayDeathsService.getAllMayDeathsEntries();
+
+			// Maps to entities
+			locationsAndIdsCacheTwo = cachedMonthlyDataService
+					.getJanuaryConfirmedLocationsAndIds(januaryConfirmedCacheOne);
+			deathLocationsAndIdsCacheTwo = cachedMonthlyDataService
+					.getJanuaryDeathsLocationsAndIds(januaryDeathsCacheOne);
+			cacheOne = false;
+			cacheTwo = true;
+		}
 	}
 
 	public List<January> getJanuaryConfirmed() {
-		return januaryConfirmed;
+		if (cacheOne) {
+			return januaryConfirmedCacheOne;
+		} else {
+			return januaryConfirmedCacheTwo;
+		}
 	}
 
-	public void setJanuaryConfirmed(List<January> januaryConfirmed) {
-		this.januaryConfirmed = januaryConfirmed;
+	public void setJanuaryConfirmedCacheOne(List<January> januaryConfirmed) {
+		this.januaryConfirmedCacheOne = januaryConfirmed;
 	}
 
 	public List<February> getFebruaryConfirmed() {
-		return februaryConfirmed;
+		if (cacheOne) {
+			return februaryConfirmedCacheOne;
+		} else {
+			return februaryConfirmedCacheTwo;
+		}
 	}
 
-	public void setFebruaryConfirmed(List<February> februaryConfirmed) {
-		this.februaryConfirmed = februaryConfirmed;
+	public void setFebruaryConfirmedCacheOne(List<February> februaryConfirmed) {
+		this.februaryConfirmedCacheOne = februaryConfirmed;
 	}
 
 	public List<March> getMarchConfirmed() {
-		return marchConfirmed;
+		if (cacheOne) {
+			return marchConfirmedCacheOne;
+		} else {
+			return marchConfirmedCacheTwo;
+		}
 	}
 
-	public void setMarchConfirmed(List<March> marchConfirmed) {
-		this.marchConfirmed = marchConfirmed;
+	public void setMarchConfirmedCacheOne(List<March> marchConfirmed) {
+		this.marchConfirmedCacheOne = marchConfirmed;
 	}
 
 	public List<April> getAprilConfirmed() {
-		return aprilConfirmed;
+		if (cacheOne) {
+			return aprilConfirmedCacheOne;
+		} else {
+			return aprilConfirmedCacheTwo;
+		}
 	}
 
-	public void setAprilConfirmed(List<April> aprilConfirmed) {
-		this.aprilConfirmed = aprilConfirmed;
+	public void setAprilConfirmedCacheOne(List<April> aprilConfirmed) {
+		this.aprilConfirmedCacheOne = aprilConfirmed;
 	}
 
 	public Map<String, Long> getLocationsAndIds() {
-		return locationsAndIds;
+		if (cacheOne) {
+			return locationsAndIdsCacheOne;
+		} else {
+			return locationsAndIdsCacheTwo;
+		}
 	}
 
-	public void setLocationsAndIds(Map<String, Long> locationsAndIds) {
-		this.locationsAndIds = locationsAndIds;
+	public void setLocationsAndIdsCacheOne(Map<String, Long> locationsAndIds) {
+		this.locationsAndIdsCacheOne = locationsAndIds;
+	}
+
+	public void setLocationsAndIdsCacheTwo(Map<String, Long> locationsAndIds) {
+		this.locationsAndIdsCacheTwo = locationsAndIds;
 	}
 
 	public List<JanuaryDeaths> getJanuaryDeaths() {
-		return januaryDeaths;
+		if (cacheOne) {
+			return januaryDeathsCacheOne;
+		} else {
+			return januaryDeathsCacheTwo;
+		}
 	}
 
-	public void setJanuaryDeaths(List<JanuaryDeaths> januaryDeaths) {
-		this.januaryDeaths = januaryDeaths;
+	public void setJanuaryDeathsCacheOne(List<JanuaryDeaths> januaryDeaths) {
+		this.januaryDeathsCacheOne = januaryDeaths;
 	}
 
 	public List<FebruaryDeaths> getFebruaryDeaths() {
-		return februaryDeaths;
+		if (cacheOne) {
+			return februaryDeathsCacheOne;
+		} else {
+			return februaryDeathsCacheTwo;
+		}
 	}
 
-	public void setFebruaryDeaths(List<FebruaryDeaths> februaryDeaths) {
-		this.februaryDeaths = februaryDeaths;
+	public void setFebruaryDeathsCacheOne(List<FebruaryDeaths> februaryDeaths) {
+		this.februaryDeathsCacheOne = februaryDeaths;
 	}
 
 	public List<MarchDeaths> getMarchDeaths() {
-		return marchDeaths;
+		if (cacheOne) {
+			return marchDeathsCacheOne;
+		} else {
+			return marchDeathsCacheTwo;
+		}
 	}
 
-	public void setMarchDeaths(List<MarchDeaths> marchDeaths) {
-		this.marchDeaths = marchDeaths;
+	public void setMarchDeathsCacheOne(List<MarchDeaths> marchDeaths) {
+		this.marchDeathsCacheOne = marchDeaths;
 	}
 
 	public List<AprilDeaths> getAprilDeaths() {
-		return aprilDeaths;
+		if (cacheOne) {
+			return aprilDeathsCacheOne;
+		} else {
+			return aprilDeathsCacheTwo;
+		}
 	}
 
-	public void setAprilDeaths(List<AprilDeaths> aprilDeaths) {
-		this.aprilDeaths = aprilDeaths;
+	public void setAprilDeathsCacheOne(List<AprilDeaths> aprilDeaths) {
+		this.aprilDeathsCacheOne = aprilDeaths;
 	}
 
 	public List<May> getMayConfirmed() {
-		return mayConfirmed;
+		if (cacheOne) {
+			return mayConfirmedCacheOne;
+		} else {
+			return mayConfirmedCacheTwo;
+		}
 	}
 
-	public void setMayConfirmed(List<May> mayConfirmed) {
-		this.mayConfirmed = mayConfirmed;
+	public void setMayConfirmedCacheOne(List<May> mayConfirmed) {
+		this.mayConfirmedCacheOne = mayConfirmed;
 	}
 
 	public List<MayDeaths> getMayDeaths() {
-		return mayDeaths;
+		if (cacheOne) {
+			return mayDeathsCacheOne;
+		} else {
+			return mayDeathsCacheTwo;
+		}
 	}
 
-	public void setMayDeaths(List<MayDeaths> mayDeaths) {
-		this.mayDeaths = mayDeaths;
+	public void setMayDeathsCacheOne(List<MayDeaths> mayDeaths) {
+		this.mayDeathsCacheOne = mayDeaths;
 	}
 
 	public Map<String, Long> getDeathLocationsAndIds() {
-		return deathLocationsAndIds;
+		if (cacheOne) {
+			return deathLocationsAndIdsCacheOne;
+		} else {
+			return deathLocationsAndIdsCacheTwo;
+		}
 	}
 
-	public void setDeathLocationsAndIds(Map<String, Long> deathLocationsAndIds) {
-		this.deathLocationsAndIds = deathLocationsAndIds;
+	public void setJanuaryConfirmedCacheTwo(List<January> januaryConfirmedCacheTwo) {
+		this.januaryConfirmedCacheTwo = januaryConfirmedCacheTwo;
+	}
+
+	public void setFebruaryConfirmedCacheTwo(List<February> februaryConfirmedCacheTwo) {
+		this.februaryConfirmedCacheTwo = februaryConfirmedCacheTwo;
+	}
+
+	public void setMarchConfirmedCacheTwo(List<March> marchConfirmedCacheTwo) {
+		this.marchConfirmedCacheTwo = marchConfirmedCacheTwo;
+	}
+
+	public void setAprilConfirmedCacheTwo(List<April> aprilConfirmedCacheTwo) {
+		this.aprilConfirmedCacheTwo = aprilConfirmedCacheTwo;
+	}
+
+	public void setMayConfirmedCacheTwo(List<May> mayConfirmedCacheTwo) {
+		this.mayConfirmedCacheTwo = mayConfirmedCacheTwo;
+	}
+
+	public void setJanuaryDeathsCacheTwo(List<JanuaryDeaths> januaryDeathsCacheTwo) {
+		this.januaryDeathsCacheTwo = januaryDeathsCacheTwo;
+	}
+
+	public void setFebruaryDeathsCacheTwo(List<FebruaryDeaths> februaryDeathsCacheTwo) {
+		this.februaryDeathsCacheTwo = februaryDeathsCacheTwo;
+	}
+
+	public void setMarchDeathsCacheTwo(List<MarchDeaths> marchDeathsCacheTwo) {
+		this.marchDeathsCacheTwo = marchDeathsCacheTwo;
+	}
+
+	public void setAprilDeathsCacheTwo(List<AprilDeaths> aprilDeathsCacheTwo) {
+		this.aprilDeathsCacheTwo = aprilDeathsCacheTwo;
+	}
+
+	public void setMayDeathsCacheTwo(List<MayDeaths> mayDeathsCacheTwo) {
+		this.mayDeathsCacheTwo = mayDeathsCacheTwo;
+	}
+
+	public void setDeathLocationsAndIdsCacheOne(Map<String, Long> deathLocationsAndIds) {
+		this.deathLocationsAndIdsCacheOne = deathLocationsAndIds;
+	}
+
+	public void setDeathLocationsAndIdsCacheTwo(Map<String, Long> deathLocationsAndIds) {
+		this.deathLocationsAndIdsCacheTwo = deathLocationsAndIds;
 	}
 
 	@Override
 	public January getJanuaryEntityByLocation(String location) {
-		Long index = locationsAndIds.get(location);
-		for (January j : januaryConfirmed) {
-			if (index == j.getId()) {
-				return j;
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (January j : januaryConfirmedCacheOne) {
+				if (index == j.getId()) {
+					return j;
+				}
 			}
+			// Return the first entry
+			return januaryConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (January j : januaryConfirmedCacheTwo) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return januaryConfirmedCacheTwo.get(0);
 		}
-		// Return the first entry
-		return januaryConfirmed.get(0);
 	}
 
 	@Override
 	public February getFebruaryEntityByLocation(String location) {
-		Long index = locationsAndIds.get(location);
-		for (February f : februaryConfirmed) {
-			if (index == f.getId()) {
-				return f;
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (February f : februaryConfirmedCacheOne) {
+				if (index == f.getId()) {
+					return f;
+				}
 			}
+			// Return the first entry
+			return februaryConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (February f : februaryConfirmedCacheTwo) {
+				if (index == f.getId()) {
+					return f;
+				}
+			}
+			// Return the first entry
+			return februaryConfirmedCacheTwo.get(0);
 		}
-		// Return the first entry
-		return februaryConfirmed.get(0);
 	}
 
 	@Override
 	public March getMarchEntityByLocation(String location) {
-		Long index = locationsAndIds.get(location);
-		for (March m : marchConfirmed) {
-			if (index == m.getId()) {
-				return m;
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (March m : marchConfirmedCacheOne) {
+				if (index == m.getId()) {
+					return m;
+				}
 			}
+			// Return the first entry
+			return marchConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (March m : marchConfirmedCacheTwo) {
+				if (index == m.getId()) {
+					return m;
+				}
+			}
+			// Return the first entry
+			return marchConfirmedCacheTwo.get(0);
 		}
-		// Return the first entry
-		return marchConfirmed.get(0);
 	}
 
 	@Override
 	public April getAprilEntityByLocation(String location) {
-		Long index = locationsAndIds.get(location);
-		for (April a : aprilConfirmed) {
-			if (index == a.getId()) {
-				return a;
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (April a : aprilConfirmedCacheOne) {
+				if (index == a.getId()) {
+					return a;
+				}
 			}
+			// Return the first entry
+			return aprilConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (April a : aprilConfirmedCacheTwo) {
+				if (index == a.getId()) {
+					return a;
+				}
+			}
+			// Return the first entry
+			return aprilConfirmedCacheTwo.get(0);
 		}
-		// Return the first entry
-		return aprilConfirmed.get(0);
 	}
 
 	@Override
 	public May getMayEntityByLocation(String location) {
-		Long index = locationsAndIds.get(location);
-		for (May m : mayConfirmed) {
-			if (index == m.getId()) {
-				return m;
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (May m : mayConfirmedCacheOne) {
+				if (index == m.getId()) {
+					return m;
+				}
 			}
+			// Return the first entry
+			return mayConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (May m : mayConfirmedCacheTwo) {
+				if (index == m.getId()) {
+					return m;
+				}
+			}
+			// Return the first entry
+			return mayConfirmedCacheTwo.get(0);
 		}
-		// Return the first entry
-		return mayConfirmed.get(0);
 	}
 
 	@Override
 	public JanuaryDeaths getJanuaryDeathByLocation(String location) {
-		Long index = deathLocationsAndIds.get(location);
-		for (JanuaryDeaths j : januaryDeaths) {
-			if (index == j.getId()) {
-				return j;
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (JanuaryDeaths j : januaryDeathsCacheOne) {
+				if (index == j.getId()) {
+					return j;
+				}
 			}
+			// Return the first entry
+			return januaryDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (JanuaryDeaths j : januaryDeathsCacheTwo) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return januaryDeathsCacheTwo.get(0);
 		}
-		// Return the first entry
-		return januaryDeaths.get(0);
 	}
 
 	@Override
 	public FebruaryDeaths getFebruaryDeathsByLocation(String location) {
-		Long index = deathLocationsAndIds.get(location);
-		for (FebruaryDeaths f : februaryDeaths) {
-			if (index == f.getId()) {
-				return f;
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (FebruaryDeaths f : februaryDeathsCacheOne) {
+				if (index == f.getId()) {
+					return f;
+				}
 			}
+			// Return the first entry
+			return februaryDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (FebruaryDeaths f : februaryDeathsCacheTwo) {
+				if (index == f.getId()) {
+					return f;
+				}
+			}
+			// Return the first entry
+			return februaryDeathsCacheTwo.get(0);
 		}
-		// Return the first entry
-		return februaryDeaths.get(0);
 	}
 
 	@Override
 	public MarchDeaths getMarchDeathsByLocation(String location) {
-		Long index = deathLocationsAndIds.get(location);
-		for (MarchDeaths m : marchDeaths) {
-			if (index == m.getId()) {
-				return m;
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (MarchDeaths m : marchDeathsCacheOne) {
+				if (index == m.getId()) {
+					return m;
+				}
 			}
+			// Return the first entry
+			return marchDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (MarchDeaths m : marchDeathsCacheTwo) {
+				if (index == m.getId()) {
+					return m;
+				}
+			}
+			// Return the first entry
+			return marchDeathsCacheTwo.get(0);
 		}
-		// Return the first entry
-		return marchDeaths.get(0);
 	}
 
 	@Override
 	public AprilDeaths getAprilDeathsByLocation(String location) {
-		Long index = deathLocationsAndIds.get(location);
-		for (AprilDeaths a : aprilDeaths) {
-			if (index == a.getId()) {
-				return a;
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (AprilDeaths a : aprilDeathsCacheOne) {
+				if (index == a.getId()) {
+					return a;
+				}
 			}
+			// Return the first entry
+			return aprilDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (AprilDeaths a : aprilDeathsCacheTwo) {
+				if (index == a.getId()) {
+					return a;
+				}
+			}
+			// Return the first entry
+			return aprilDeathsCacheTwo.get(0);
 		}
-		// Return the first entry
-		return aprilDeaths.get(0);
 	}
 
 	@Override
 	public MayDeaths getMayDeathsByLocation(String location) {
-		Long index = deathLocationsAndIds.get(location);
-		for (MayDeaths m : mayDeaths) {
-			if (index == m.getId()) {
-				return m;
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (MayDeaths m : mayDeathsCacheOne) {
+				if (index == m.getId()) {
+					return m;
+				}
 			}
+			// Return the first entry
+			return mayDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (MayDeaths m : mayDeathsCacheTwo) {
+				if (index == m.getId()) {
+					return m;
+				}
+			}
+			// Return the first entry
+			return mayDeathsCacheTwo.get(0);
 		}
-		// Return the first entry
-		return mayDeaths.get(0);
 	}
 }

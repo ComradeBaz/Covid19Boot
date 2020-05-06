@@ -29,4 +29,6 @@ public interface CachedUsMonthlyDataLocal {
 
 	public LinkedHashMap<String, Integer> getEmptyDataSet();
 
+	public void updateCache();
+
 }

@@ -176,4 +176,9 @@ public class CachedMonthlyDataService implements CachedMonthlyDataServiceLocal {
 		return cachedMonthlyData.getMayDeathsByLocation(location);
 	}
 
+	@Override
+	public void updateCache() {
+		cachedMonthlyData.updateCache();
+	}
+
 }

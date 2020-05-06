@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.domrade.dao.interfaces.DataFileSourceDao;
-import com.domrade.dao.interfaces.FebruaryDao;
 import com.domrade.interfaces.cache.CachedUsMonthlyDataServiceLocal;
 import com.domrade.interfaces.local.CachedDataLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
@@ -36,9 +35,6 @@ public class CachedData implements CachedDataLocal {
 
 	@Autowired
 	private DataFileSourceDao dataFileSourceDao;
-
-	@Autowired
-	private FebruaryDao februaryDao;
 
 	@Autowired
 	FebruaryServiceLocal februaryService;
@@ -66,17 +62,26 @@ public class CachedData implements CachedDataLocal {
 	private List<String> may;
 	private boolean mayData;
 
+	// Caching
+	private boolean cacheOne;
+	private boolean cacheTwo;
+
 	// List of locations
-	private List<String> locations;
+	private List<String> locationsCacheOne;
+	private List<String> locationsCacheTwo;
 
 	// US States
-	private List<String> usStates;
+	private List<String> usStatesCacheOne;
+	private List<String> usStatesCacheTwo;
 	// US States and Counties with IDs
-	LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties;
+	LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCountiesCacheOne;
+	LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCountiesCacheTwo;
 	// US States and counties but not Ids
-	LinkedHashMap<String, ArrayList<String>> statesAndCountiesNoId;
+	LinkedHashMap<String, ArrayList<String>> statesAndCountiesNoIdCacheOne;
+	LinkedHashMap<String, ArrayList<String>> statesAndCountiesNoIdCacheTwo;
 	// Common Data
-	private List<String> allCountries;
+	private List<String> allCountriesCacheOne;
+	private List<String> allCountriesCacheTwo;
 
 	public CachedData() {
 		// no arg constructor
@@ -85,12 +90,35 @@ public class CachedData implements CachedDataLocal {
 	@PostConstruct
 	public void init() {
 		// setAllCountries(februaryDao.getAllFebruaryCountries());
-		setLocations(februaryService.getAllFebruaryCountryRegionProvinceState());
+		setLocationsCacheOne(februaryService.getAllFebruaryCountryRegionProvinceState());
 		allFileNames = dataFileSourceDao.findAllFileNames();
 		setFileLocation(fileDirectory);
-		usStates = usJanuaryService.getAllStates();
-		statesAndCounties = cachedUsMonthlyDataService.getStatesAndCounties();
-		statesAndCountiesNoId = cachedUsMonthlyDataService.getCountiesByState(statesAndCounties);
+		usStatesCacheOne = usJanuaryService.getAllStates();
+		statesAndCountiesCacheOne = cachedUsMonthlyDataService.getStatesAndCounties();
+		statesAndCountiesNoIdCacheOne = cachedUsMonthlyDataService.getCountiesByState(statesAndCountiesCacheOne);
+		cacheOne = true;
+		cacheTwo = false;
+	}
+
+	@Override
+	public void updateCache() {
+		if (!cacheOne) {
+			System.out.println("Setting cacheOne");
+			setLocationsCacheOne(februaryService.getAllFebruaryCountryRegionProvinceState());
+			usStatesCacheOne = usJanuaryService.getAllStates();
+			statesAndCountiesCacheOne = cachedUsMonthlyDataService.getStatesAndCounties();
+			statesAndCountiesNoIdCacheOne = cachedUsMonthlyDataService.getCountiesByState(statesAndCountiesCacheOne);
+			cacheOne = true;
+			cacheTwo = false;
+		} else {
+			System.out.println("Setting cacheTwo");
+			setLocationsCacheTwo(februaryService.getAllFebruaryCountryRegionProvinceState());
+			usStatesCacheTwo = usJanuaryService.getAllStates();
+			statesAndCountiesCacheTwo = cachedUsMonthlyDataService.getStatesAndCounties();
+			statesAndCountiesNoIdCacheTwo = cachedUsMonthlyDataService.getCountiesByState(statesAndCountiesCacheOne);
+			cacheOne = false;
+			cacheTwo = true;
+		}
 	}
 
 	@Override
@@ -105,11 +133,6 @@ public class CachedData implements CachedDataLocal {
 			setJanuaryData(true);
 		} else {
 			setJanuaryData(false);
-		}
-		System.out.println(
-				"******************************************** January ********************************************");
-		for (String s : january) {
-			System.out.println(s);
 		}
 	}
 
@@ -135,11 +158,6 @@ public class CachedData implements CachedDataLocal {
 		} else {
 			setFebruaryData(false);
 		}
-		System.out.println(
-				"******************************************** February ********************************************");
-		for (String s : february) {
-			System.out.println(s);
-		}
 	}
 
 	@Override
@@ -155,11 +173,6 @@ public class CachedData implements CachedDataLocal {
 		} else {
 			setMarchData(false);
 		}
-		System.out.println(
-				"******************************************** March ********************************************");
-		for (String s : march) {
-			System.out.println(s);
-		}
 	}
 
 	@Override
@@ -174,11 +187,6 @@ public class CachedData implements CachedDataLocal {
 			setAprilData(true);
 		} else {
 			setAprilData(false);
-		}
-		System.out.println(
-				"******************************************** April ********************************************");
-		for (String s : april) {
-			System.out.println(s);
 		}
 	}
 
@@ -259,51 +267,94 @@ public class CachedData implements CachedDataLocal {
 
 	@Override
 	public List<String> getAllCountries() {
-		return allCountries;
+		if (cacheOne) {
+			return allCountriesCacheOne;
+		} else {
+			return allCountriesCacheTwo;
+		}
 	}
 
-	public void setAllCountries(List<String> allCountries) {
-		this.allCountries = allCountries;
+	public void setAllCountriesCacheOne(List<String> allCountries) {
+		this.allCountriesCacheOne = allCountries;
+	}
+
+	public void setAllCountriesCacheTwo(List<String> allCountries) {
+		this.allCountriesCacheTwo = allCountries;
 	}
 
 	@Override
 	public List<String> getLocations() {
-		return locations;
+		if (cacheOne) {
+			return locationsCacheOne;
+		} else {
+			return locationsCacheTwo;
+		}
 	}
 
-	public void setLocations(List<String> locations) {
-		this.locations = locations;
+	public void setLocationsCacheOne(List<String> locations) {
+		this.locationsCacheOne = locations;
+	}
+
+	public void setLocationsCacheTwo(List<String> locations) {
+		this.locationsCacheTwo = locations;
 	}
 
 	@Override
 	public List<String> getUsStates() {
-		return usStates;
+		if (cacheOne) {
+			return usStatesCacheOne;
+		} else {
+			return usStatesCacheTwo;
+		}
 	}
 
-	public void setUsStates(List<String> usStates) {
-		this.usStates = usStates;
+	public void setUsStatesCacheOne(List<String> usStates) {
+		this.usStatesCacheOne = usStates;
 	}
 
-	public LinkedHashMap<String, LinkedHashMap<String, String>> getStatesAndCounties() {
-		return statesAndCounties;
+	public void setUsStatesCacheTwo(List<String> usStates) {
+		this.usStatesCacheTwo = usStates;
 	}
 
-	public void setStatesAndCounties(LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties) {
-		this.statesAndCounties = statesAndCounties;
+	public LinkedHashMap<String, LinkedHashMap<String, String>> getStatesAndCountiesCacheOne() {
+		return statesAndCountiesCacheOne;
+	}
+
+	public LinkedHashMap<String, LinkedHashMap<String, String>> getStatesAndCountiesCacheTwo() {
+		return statesAndCountiesCacheTwo;
+	}
+
+	public void setStatesAndCountiesCacheOne(LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties) {
+		this.statesAndCountiesCacheOne = statesAndCounties;
+	}
+
+	public void setStatesAndCountiesCacheTwo(LinkedHashMap<String, LinkedHashMap<String, String>> statesAndCounties) {
+		this.statesAndCountiesCacheTwo = statesAndCounties;
 	}
 
 	@Override
 	public String getCountyIdByStateAndCounty(String state, String county) {
-		Map<String, String> statesAndCounties = this.statesAndCounties.get(state);
-		String id = statesAndCounties.get(county);
+		if (cacheOne) {
+			Map<String, String> statesAndCounties = this.statesAndCountiesCacheOne.get(state);
+			String id = statesAndCounties.get(county);
 
-		return id;
+			return id;
+		} else {
+			Map<String, String> statesAndCounties = this.statesAndCountiesCacheTwo.get(state);
+			String id = statesAndCounties.get(county);
+
+			return id;
+		}
 	}
 
 	// Returns a list of counties for the given state
 	@Override
 	public ArrayList<String> getCountiesByState(String state) {
-		return this.statesAndCountiesNoId.get(state);
+		if (cacheOne) {
+			return this.statesAndCountiesNoIdCacheOne.get(state);
+		} else {
+			return this.statesAndCountiesNoIdCacheTwo.get(state);
+		}
 	}
 
 }

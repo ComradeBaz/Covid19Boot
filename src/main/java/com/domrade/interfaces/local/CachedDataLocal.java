@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface CachedDataLocal {
 
+	public void updateCache();
+
 	public List<String> getLocations();
 
 	public List<String> getFileNames();

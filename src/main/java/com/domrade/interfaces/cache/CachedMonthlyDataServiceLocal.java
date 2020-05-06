@@ -58,4 +58,6 @@ public interface CachedMonthlyDataServiceLocal {
 
 	public MayDeaths getMayDeathsByLocation(String location);
 
+	public void updateCache();
+
 }
