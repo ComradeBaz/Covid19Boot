@@ -18,6 +18,8 @@ import com.domrade.entity.implementation.February;
 import com.domrade.entity.implementation.FebruaryDeaths;
 import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
+import com.domrade.entity.implementation.June;
+import com.domrade.entity.implementation.JuneDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
 import com.domrade.entity.implementation.May;
@@ -152,6 +154,11 @@ public class CachedMonthlyDataService implements CachedMonthlyDataServiceLocal {
 	}
 
 	@Override
+	public June getJuneEntityByLocation(String location) {
+		return cachedMonthlyData.getJuneEntityByLocation(location);
+	}
+
+	@Override
 	public JanuaryDeaths getJanuaryDeathsByLocation(String location) {
 		return cachedMonthlyData.getJanuaryDeathByLocation(location);
 	}
@@ -174,6 +181,11 @@ public class CachedMonthlyDataService implements CachedMonthlyDataServiceLocal {
 	@Override
 	public MayDeaths getMayDeathsByLocation(String location) {
 		return cachedMonthlyData.getMayDeathsByLocation(location);
+	}
+
+	@Override
+	public JuneDeaths getJuneDeathsByLocation(String location) {
+		return cachedMonthlyData.getJuneDeathsByLocation(location);
 	}
 
 	@Override

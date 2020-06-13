@@ -20,6 +20,8 @@ import com.domrade.entity.implementation.February;
 import com.domrade.entity.implementation.FebruaryDeaths;
 import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
+import com.domrade.entity.implementation.June;
+import com.domrade.entity.implementation.JuneDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
 import com.domrade.entity.implementation.May;
@@ -29,11 +31,13 @@ import com.domrade.interfaces.local.CachedMonthlyDataLocal;
 import com.domrade.interfaces.months.confirmed.AprilServiceLocal;
 import com.domrade.interfaces.months.confirmed.FebruaryServiceLocal;
 import com.domrade.interfaces.months.confirmed.JanuaryServiceLocal;
+import com.domrade.interfaces.months.confirmed.JuneServiceLocal;
 import com.domrade.interfaces.months.confirmed.MarchServiceLocal;
 import com.domrade.interfaces.months.confirmed.MayServiceLocal;
 import com.domrade.interfaces.months.deaths.AprilDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.FebruaryDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.JanuaryDeathsServiceLocal;
+import com.domrade.interfaces.months.deaths.JuneDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.MarchDeathsServiceLocal;
 import com.domrade.interfaces.months.deaths.MayDeathsServiceLocal;
 
@@ -61,6 +65,9 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	private MayServiceLocal mayService;
 
 	@Autowired
+	private JuneServiceLocal juneService;
+
+	@Autowired
 	private CachedMonthlyDataServiceLocal cachedMonthlyDataService;
 
 	@Autowired
@@ -78,6 +85,9 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	@Autowired
 	private MayDeathsServiceLocal mayDeathsService;
 
+	@Autowired
+	private JuneDeathsServiceLocal juneDeathsService;
+
 	private boolean cacheOne;
 	private boolean cacheTwo;
 
@@ -87,12 +97,14 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	private List<March> marchConfirmedCacheOne;
 	private List<April> aprilConfirmedCacheOne;
 	private List<May> mayConfirmedCacheOne;
+	private List<June> juneConfirmedCacheOne;
 
 	private List<JanuaryDeaths> januaryDeathsCacheOne;
 	private List<FebruaryDeaths> februaryDeathsCacheOne;
 	private List<MarchDeaths> marchDeathsCacheOne;
 	private List<AprilDeaths> aprilDeathsCacheOne;
 	private List<MayDeaths> mayDeathsCacheOne;
+	private List<JuneDeaths> juneDeathsCacheOne;
 
 	// cacheTwo
 	private List<January> januaryConfirmedCacheTwo;
@@ -100,12 +112,14 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	private List<March> marchConfirmedCacheTwo;
 	private List<April> aprilConfirmedCacheTwo;
 	private List<May> mayConfirmedCacheTwo;
+	private List<June> juneConfirmedCacheTwo;
 
 	private List<JanuaryDeaths> januaryDeathsCacheTwo;
 	private List<FebruaryDeaths> februaryDeathsCacheTwo;
 	private List<MarchDeaths> marchDeathsCacheTwo;
 	private List<AprilDeaths> aprilDeathsCacheTwo;
 	private List<MayDeaths> mayDeathsCacheTwo;
+	private List<JuneDeaths> juneDeathsCacheTwo;
 
 	// Map with location and id
 	// service will get an id based on location from this map
@@ -129,6 +143,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		marchConfirmedCacheOne = marchService.getAllMarchEntries();
 		aprilConfirmedCacheOne = aprilService.getAllAprilEntries();
 		mayConfirmedCacheOne = mayService.getAllMayEntries();
+		juneConfirmedCacheOne = juneService.getAllJuneEntries();
 
 		// Deaths
 		januaryDeathsCacheOne = januaryDeathsService.getAllJanuaryDeathsEntries();
@@ -136,6 +151,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		marchDeathsCacheOne = marchDeathsService.getAllMarchDeathsEntries();
 		aprilDeathsCacheOne = aprilDeathsService.getAllAprilDeathsEntries();
 		mayDeathsCacheOne = mayDeathsService.getAllMayDeathsEntries();
+		juneDeathsCacheOne = juneDeathsService.getAllJuneDeathsEntries();
 
 		// Maps to entities
 		locationsAndIdsCacheOne = cachedMonthlyDataService.getJanuaryConfirmedLocationsAndIds(januaryConfirmedCacheOne);
@@ -152,6 +168,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 			marchConfirmedCacheOne = marchService.getAllMarchEntries();
 			aprilConfirmedCacheOne = aprilService.getAllAprilEntries();
 			mayConfirmedCacheOne = mayService.getAllMayEntries();
+			juneConfirmedCacheOne = juneService.getAllJuneEntries();
 
 			// Deaths
 			januaryDeathsCacheOne = januaryDeathsService.getAllJanuaryDeathsEntries();
@@ -159,6 +176,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 			marchDeathsCacheOne = marchDeathsService.getAllMarchDeathsEntries();
 			aprilDeathsCacheOne = aprilDeathsService.getAllAprilDeathsEntries();
 			mayDeathsCacheOne = mayDeathsService.getAllMayDeathsEntries();
+			juneDeathsCacheOne = juneDeathsService.getAllJuneDeathsEntries();
 
 			// Maps to entities
 			locationsAndIdsCacheOne = cachedMonthlyDataService
@@ -173,6 +191,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 			marchConfirmedCacheTwo = marchService.getAllMarchEntries();
 			aprilConfirmedCacheTwo = aprilService.getAllAprilEntries();
 			mayConfirmedCacheTwo = mayService.getAllMayEntries();
+			juneConfirmedCacheTwo = juneService.getAllJuneEntries();
 
 			// Deaths
 			januaryDeathsCacheTwo = januaryDeathsService.getAllJanuaryDeathsEntries();
@@ -180,6 +199,7 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 			marchDeathsCacheTwo = marchDeathsService.getAllMarchDeathsEntries();
 			aprilDeathsCacheTwo = aprilDeathsService.getAllAprilDeathsEntries();
 			mayDeathsCacheTwo = mayDeathsService.getAllMayDeathsEntries();
+			juneDeathsCacheTwo = juneDeathsService.getAllJuneDeathsEntries();
 
 			// Maps to entities
 			locationsAndIdsCacheTwo = cachedMonthlyDataService
@@ -237,6 +257,30 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 
 	public void setAprilConfirmedCacheOne(List<April> aprilConfirmed) {
 		this.aprilConfirmedCacheOne = aprilConfirmed;
+	}
+
+	public List<May> getMayConfirmed() {
+		if (cacheOne) {
+			return mayConfirmedCacheOne;
+		} else {
+			return mayConfirmedCacheTwo;
+		}
+	}
+
+	public void setMayConfirmedCacheOne(List<May> mayConfirmed) {
+		this.mayConfirmedCacheOne = mayConfirmed;
+	}
+
+	public List<June> getJuneConfirmed() {
+		if (cacheOne) {
+			return juneConfirmedCacheOne;
+		} else {
+			return juneConfirmedCacheTwo;
+		}
+	}
+
+	public void setJuneConfirmedCacheOne(List<June> juneConfirmed) {
+		this.juneConfirmedCacheOne = juneConfirmed;
 	}
 
 	public Map<String, Long> getLocationsAndIds() {
@@ -303,18 +347,6 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		this.aprilDeathsCacheOne = aprilDeaths;
 	}
 
-	public List<May> getMayConfirmed() {
-		if (cacheOne) {
-			return mayConfirmedCacheOne;
-		} else {
-			return mayConfirmedCacheTwo;
-		}
-	}
-
-	public void setMayConfirmedCacheOne(List<May> mayConfirmed) {
-		this.mayConfirmedCacheOne = mayConfirmed;
-	}
-
 	public List<MayDeaths> getMayDeaths() {
 		if (cacheOne) {
 			return mayDeathsCacheOne;
@@ -325,6 +357,18 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 
 	public void setMayDeathsCacheOne(List<MayDeaths> mayDeaths) {
 		this.mayDeathsCacheOne = mayDeaths;
+	}
+
+	public List<JuneDeaths> getJuneDeaths() {
+		if (cacheOne) {
+			return juneDeathsCacheOne;
+		} else {
+			return juneDeathsCacheTwo;
+		}
+	}
+
+	public void setJuneDeathsCacheOne(List<JuneDeaths> juneDeaths) {
+		this.juneDeathsCacheOne = juneDeaths;
 	}
 
 	public Map<String, Long> getDeathLocationsAndIds() {
@@ -355,6 +399,10 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 		this.mayConfirmedCacheTwo = mayConfirmedCacheTwo;
 	}
 
+	public void setJuneConfirmedCacheTwo(List<June> juneConfirmedCacheTwo) {
+		this.juneConfirmedCacheTwo = juneConfirmedCacheTwo;
+	}
+
 	public void setJanuaryDeathsCacheTwo(List<JanuaryDeaths> januaryDeathsCacheTwo) {
 		this.januaryDeathsCacheTwo = januaryDeathsCacheTwo;
 	}
@@ -373,6 +421,10 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 
 	public void setMayDeathsCacheTwo(List<MayDeaths> mayDeathsCacheTwo) {
 		this.mayDeathsCacheTwo = mayDeathsCacheTwo;
+	}
+
+	public void setJuneDeathsCacheTwo(List<JuneDeaths> juneDeathsCacheTwo) {
+		this.juneDeathsCacheTwo = juneDeathsCacheTwo;
 	}
 
 	public void setDeathLocationsAndIdsCacheOne(Map<String, Long> deathLocationsAndIds) {
@@ -499,6 +551,29 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 	}
 
 	@Override
+	public June getJuneEntityByLocation(String location) {
+		if (cacheOne) {
+			Long index = locationsAndIdsCacheOne.get(location);
+			for (June j : juneConfirmedCacheOne) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return juneConfirmedCacheOne.get(0);
+		} else {
+			Long index = locationsAndIdsCacheTwo.get(location);
+			for (June j : juneConfirmedCacheTwo) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return juneConfirmedCacheTwo.get(0);
+		}
+	}
+
+	@Override
 	public JanuaryDeaths getJanuaryDeathByLocation(String location) {
 		if (cacheOne) {
 			Long index = deathLocationsAndIdsCacheOne.get(location);
@@ -610,6 +685,29 @@ public class CachedMonthlyData implements CachedMonthlyDataLocal {
 			}
 			// Return the first entry
 			return mayDeathsCacheTwo.get(0);
+		}
+	}
+
+	@Override
+	public JuneDeaths getJuneDeathsByLocation(String location) {
+		if (cacheOne) {
+			Long index = deathLocationsAndIdsCacheOne.get(location);
+			for (JuneDeaths j : juneDeathsCacheOne) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return juneDeathsCacheOne.get(0);
+		} else {
+			Long index = deathLocationsAndIdsCacheTwo.get(location);
+			for (JuneDeaths j : juneDeathsCacheTwo) {
+				if (index == j.getId()) {
+					return j;
+				}
+			}
+			// Return the first entry
+			return juneDeathsCacheTwo.get(0);
 		}
 	}
 }

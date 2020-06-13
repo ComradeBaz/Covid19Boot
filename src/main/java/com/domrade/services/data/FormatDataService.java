@@ -24,6 +24,8 @@ import com.domrade.entity.implementation.February;
 import com.domrade.entity.implementation.FebruaryDeaths;
 import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
+import com.domrade.entity.implementation.June;
+import com.domrade.entity.implementation.JuneDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
 import com.domrade.entity.implementation.May;
@@ -232,6 +234,7 @@ public class FormatDataService implements FormatDataServiceLocal {
 		LinkedHashMap<String, Integer> marchData;
 		LinkedHashMap<String, Integer> aprilData;
 		LinkedHashMap<String, Integer> mayData;
+		LinkedHashMap<String, Integer> juneData;
 
 		if (entityType == EntityType.DEATHS) {
 			JanuaryDeaths januaryDeaths = cachedMonthlyDataService.getJanuaryDeathsByLocation(location);
@@ -239,24 +242,28 @@ public class FormatDataService implements FormatDataServiceLocal {
 			MarchDeaths marchDeaths = cachedMonthlyDataService.getMarchDeathsByLocation(location);
 			AprilDeaths aprilDeaths = cachedMonthlyDataService.getAprilDeathsByLocation(location);
 			MayDeaths mayDeaths = cachedMonthlyDataService.getMayDeathsByLocation(location);
+			JuneDeaths juneDeaths = cachedMonthlyDataService.getJuneDeathsByLocation(location);
 
 			janData = this.removeLocationDetails(januaryDeaths);
 			febData = this.removeLocationDetails(februaryDeaths);
 			marchData = this.removeLocationDetails(marchDeaths);
 			aprilData = this.removeLocationDetails(aprilDeaths);
 			mayData = this.removeLocationDetails(mayDeaths);
+			juneData = this.removeLocationDetails(juneDeaths);
 		} else {
 			January januaryConfirmed = cachedMonthlyDataService.getJanuaryEntityByLocation(location);
 			February februaryConfirmed = cachedMonthlyDataService.getFebruaryEntityByLocation(location);
 			March marchConfirmed = cachedMonthlyDataService.gettMarchEntityByLocation(location);
 			April aprilConfirmed = cachedMonthlyDataService.getAprilEntityByLocation(location);
 			May mayConfirmed = cachedMonthlyDataService.getMayEntityByLocation(location);
+			June juneConfirmed = cachedMonthlyDataService.getJuneEntityByLocation(location);
 
 			janData = this.removeLocationDetails(januaryConfirmed);
 			febData = this.removeLocationDetails(februaryConfirmed);
 			marchData = this.removeLocationDetails(marchConfirmed);
 			aprilData = this.removeLocationDetails(aprilConfirmed);
 			mayData = this.removeLocationDetails(mayConfirmed);
+			juneData = this.removeLocationDetails(juneConfirmed);
 		}
 
 		ArrayList<LinkedHashMap<String, Integer>> listOfMaps = new ArrayList<>();
@@ -265,6 +272,7 @@ public class FormatDataService implements FormatDataServiceLocal {
 		listOfMaps.add(marchData);
 		listOfMaps.add(aprilData);
 		listOfMaps.add(mayData);
+		listOfMaps.add(juneData);
 
 		return getDataForAllMonths(listOfMaps);
 	}

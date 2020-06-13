@@ -13,6 +13,8 @@ import com.domrade.entity.implementation.February;
 import com.domrade.entity.implementation.FebruaryDeaths;
 import com.domrade.entity.implementation.January;
 import com.domrade.entity.implementation.JanuaryDeaths;
+import com.domrade.entity.implementation.June;
+import com.domrade.entity.implementation.JuneDeaths;
 import com.domrade.entity.implementation.March;
 import com.domrade.entity.implementation.MarchDeaths;
 import com.domrade.entity.implementation.May;
@@ -35,6 +37,8 @@ public interface CachedMonthlyDataLocal {
 
 	public May getMayEntityByLocation(String location);
 
+	public June getJuneEntityByLocation(String location);
+
 	public JanuaryDeaths getJanuaryDeathByLocation(String location);
 
 	public FebruaryDeaths getFebruaryDeathsByLocation(String location);
@@ -44,6 +48,8 @@ public interface CachedMonthlyDataLocal {
 	public AprilDeaths getAprilDeathsByLocation(String location);
 
 	public MayDeaths getMayDeathsByLocation(String location);
+
+	public JuneDeaths getJuneDeathsByLocation(String location);
 
 	public void updateCache();
 

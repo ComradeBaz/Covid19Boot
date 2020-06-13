@@ -32,8 +32,8 @@ public class CachedUsMonthlyData implements CachedUsMonthlyDataLocal {
 	@Autowired
 	private CachedDataLocal cachedData;
 
-	private boolean cacheOne;
-	private boolean cacheTwo;
+	private boolean cacheOne = true;
+	private boolean cacheTwo = false;
 
 	// Confirmed CacheOne
 	LinkedHashMap<String, LinkedHashMap<String, Integer>> usStateDataCacheOne = new LinkedHashMap<>();
