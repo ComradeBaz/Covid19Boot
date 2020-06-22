@@ -7,6 +7,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.domrade.entity.EntityType;
+import com.domrade.interfaces.cache.CachedLocationsLocal;
 import com.domrade.interfaces.charts.ChartsJsDataServiceLocal;
 import com.domrade.interfaces.converters.ConvertStringToEnumTypeServiceLocal;
 import com.domrade.interfaces.converters.ConvertToStringServiceLocal;
 import com.domrade.interfaces.data.FormatDataServiceLocal;
 import com.domrade.interfaces.data.FormatUsDataServiceLocal;
-import com.domrade.interfaces.local.CachedDataLocal;
-import com.domrade.interfaces.local.CachedUsMonthlyDataLocal;
+import com.domrade.interfaces.local.CachedCovidDataLocal;
 import com.domrade.rest.request.CollectionUsStateAndCounty;
 import com.domrade.rest.request.RequestType;
 import com.domrade.rest.request.UsStateAndCounty;
@@ -31,12 +33,7 @@ import com.domrade.rest.request.UsStateAndCounty;
 @RestController
 public class UsRestData {
 
-	@Autowired
-	private CachedUsMonthlyDataLocal cachedUsData;
-
-	@Autowired
-	CachedDataLocal cachedData;
-
+	private final static Logger LOGGER = Logger.getLogger(UsRestData.class);
 	@Autowired
 	private ChartsJsDataServiceLocal chartsJsDataService;
 
@@ -52,6 +49,12 @@ public class UsRestData {
 	@Autowired
 	private FormatDataServiceLocal formatDataService;
 
+	@Autowired
+	private CachedLocationsLocal cachedLocations;
+
+	@Autowired
+	private CachedCovidDataLocal cachedCovidData;
+
 	public UsRestData() {
 		// TODO Auto-generated constructor stub
 	}
@@ -59,63 +62,63 @@ public class UsRestData {
 	@GetMapping("/getStates")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getStates() {
-
-		return convertToStringService.convertToJsonArray(cachedData.getUsStates());
+		LOGGER.log(Level.DEBUG, "Getting US states");
+		return convertToStringService.convertToJsonArray(cachedLocations.getUsStates());
 	}
 
 	@GetMapping("/getCountiesByState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getCountiesByState(@RequestParam String state) {
-
-		return convertToStringService.convertToJsonArray(cachedData.getCountiesByState(state));
+		LOGGER.log(Level.DEBUG, "Getting US counties by state");
+		return convertToStringService.convertToJsonArray(cachedLocations.getCountiesByState(state));
 	}
 
 	@GetMapping("/getConfirmedDataByState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getConfirmedDataByState(@RequestParam String state) {
-
+		LOGGER.log(Level.DEBUG, "Getting confirmed US data by state: " + state);
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getUsDataByState(state), state, RequestType.RAW_DATA, EntityType.CONFIRMED));
+				cachedCovidData.getUsDataByState(state), state, RequestType.RAW_DATA, EntityType.CONFIRMED));
 
 	}
 
 	@GetMapping("/getDeathsDataByState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDeathsDataByState(@RequestParam String state) {
-
+		LOGGER.log(Level.DEBUG, "Getting deaths US data by state: " + state);
 		// returns a simple array of strings
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getUsDeathsByState(state), state, RequestType.RAW_DATA, EntityType.DEATHS));
+				cachedCovidData.getUsDeathsByState(state), state, RequestType.RAW_DATA, EntityType.DEATHS));
 
 	}
 
 	@GetMapping("/getDailyIncreaseConfirmedDataByState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDailyIncreaseConfirmedDataByState(@RequestParam String state) {
-
+		LOGGER.log(Level.DEBUG, "Getting daily increase US confirmed data by state: " + state);
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getUsDataByState(state), state, RequestType.DAILY_INCREASE, EntityType.CONFIRMED));
+				cachedCovidData.getUsDataByState(state), state, RequestType.DAILY_INCREASE, EntityType.CONFIRMED));
 
 	}
 
 	@GetMapping("/getDailyIncreaseDeathsDataByState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDailyIncreaseDeathsDataByState(@RequestParam String state) {
-
+		LOGGER.log(Level.DEBUG, "Getting daily increase US deaths data by state: " + state);
 		// returns a simple array of strings
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getUsDeathsByState(state), state, RequestType.DAILY_INCREASE, EntityType.DEATHS));
+				cachedCovidData.getUsDeathsByState(state), state, RequestType.DAILY_INCREASE, EntityType.DEATHS));
 
 	}
 
 	@GetMapping("/getConfirmedDataByCounty")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getConfirmedDataByCounty(@RequestParam String state, @RequestParam String county) {
-
-		String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+		LOGGER.log(Level.DEBUG, "Getting confirmed US data by state: " + state + " and county: " + county);
+		long countyId = cachedLocations.getCountyIdByStateAndCounty(state, county);
 
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getConfirmedCountyDataByCountyId(countyId), state, RequestType.RAW_DATA,
+				cachedCovidData.getConfirmedCountyDataByCountyId(countyId), state, RequestType.RAW_DATA,
 				EntityType.CONFIRMED));
 
 	}
@@ -123,23 +126,25 @@ public class UsRestData {
 	@GetMapping("/getDeathsDataByCounty")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDeathsDataByCounty(@RequestParam String state, @RequestParam String county) {
-
-		String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+		LOGGER.log(Level.DEBUG, "Getting deaths US data by state: " + state + " and county: " + county);
+		long countyId = cachedLocations.getCountyIdByStateAndCounty(state, county);
 
 		// returns a simple array of strings
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getDeathsCountyDataByCountyId(countyId), state, RequestType.RAW_DATA, EntityType.DEATHS));
+				cachedCovidData.getDeathsCountyDataByCountyId(countyId), state, RequestType.RAW_DATA,
+				EntityType.DEATHS));
 
 	}
 
 	@GetMapping("/getDailyIncreaseConfirmedDataByCounty")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDailyIncreaseConfirmedDataByCounty(@RequestParam String state, @RequestParam String county) {
-
-		String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+		LOGGER.log(Level.DEBUG,
+				"Getting daily increase US confirmed data by state: " + state + " and county: " + county);
+		long countyId = cachedLocations.getCountyIdByStateAndCounty(state, county);
 
 		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
-				cachedUsData.getConfirmedCountyDataByCountyId(countyId), state, RequestType.DAILY_INCREASE,
+				cachedCovidData.getConfirmedCountyDataByCountyId(countyId), state, RequestType.DAILY_INCREASE,
 				EntityType.CONFIRMED));
 
 	}
@@ -147,13 +152,13 @@ public class UsRestData {
 	@GetMapping("/getDailyIncreaseDeathsDataByCounty")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDailyIncreaseDeathsDataByCounty(@RequestParam String state, @RequestParam String county) {
-
-		String countyId = cachedData.getCountyIdByStateAndCounty(state, county);
+		LOGGER.log(Level.DEBUG, "Getting daily increase US deaths data by state: " + state + " and county: " + county);
+		long countyId = cachedLocations.getCountyIdByStateAndCounty(state, county);
 
 		// returns a simple array of strings
-		return convertToStringService.convertGenericObjectToJsonObject(
-				chartsJsDataService.getChartsJsDataSingleDataSet(cachedUsData.getDeathsCountyDataByCountyId(countyId),
-						state, RequestType.DAILY_INCREASE, EntityType.DEATHS));
+		return convertToStringService.convertGenericObjectToJsonObject(chartsJsDataService.getChartsJsDataSingleDataSet(
+				cachedCovidData.getDeathsCountyDataByCountyId(countyId), state, RequestType.DAILY_INCREASE,
+				EntityType.DEATHS));
 
 	}
 
@@ -166,9 +171,11 @@ public class UsRestData {
 		EntityType entityType = convertStringToEnumTypeService.convertStringToEntityType(request.getEntityType());
 		UsStateAndCounty statesAndCounties[] = request.getStatesAndCounties();
 
+		LOGGER.log(Level.DEBUG, "Getting compare data for US locations: " + statesAndCounties);
+
 		// Get the raw data for each location
-		ArrayList<LinkedHashMap<String, Integer>> locationsData = cachedUsData
-				.formatDataForMultipleUsLocations(statesAndCounties, request.getLevel(), entityType);
+		ArrayList<LinkedHashMap<String, Integer>> locationsData = cachedCovidData
+				.getDataForMultipleUsLocations(statesAndCounties, request.getLevel(), entityType);
 		// Get index of longest map
 		int indexOfLongestMap = formatDataService.getIndexOfLongestMap(locationsData);
 		UsStateAndCounty[] reorderedLocation = formatUsDataService.getReorderedListOfStatesCounties(statesAndCounties,

@@ -13,17 +13,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.domrade.chartjs.chart.ChartsJsChartWithOptionsSingleDataSet;
 import com.domrade.chartjs.chart.data.ChartsJsDataMultipleDataSets;
 import com.domrade.chartjs.chart.data.ChartsJsDataSingleDataSet;
-import com.domrade.chartjs.chart.data.Location;
 import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
 import com.domrade.chartjs.chart.data.datasets.ChartsJsDataSet;
-import com.domrade.chartjs.chart.options.ChartsJsOptions;
-import com.domrade.chartjs.chart.options.scales.Scales;
-import com.domrade.chartjs.chart.options.scales.Ticks;
-import com.domrade.chartjs.chart.options.scales.XAxes;
-import com.domrade.chartjs.chart.options.scales.YAxes;
 import com.domrade.entity.EntityType;
 import com.domrade.interfaces.charts.ChartsJsDataServiceLocal;
 import com.domrade.interfaces.data.DataProcessingServiceLocal;
@@ -66,37 +59,6 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 		ChartsJsDataSingleDataSet returnValue = new ChartsJsDataSingleDataSet(chartLabels, dataArrayList, chartType);
 
 		return returnValue;
-	}
-
-	// Get two data sets for a chart displaying two datasets
-	// Prototype using one data set and formatting it twice
-	@Override
-	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForMoreThanOneLocation(
-			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, Location[] locations, RequestType requestType) {
-
-		ArrayList<Integer> dataArrayList = new ArrayList<>();
-		int[] dataArray;
-		int index = 0;
-		// The same chart labels apply to all entries in listOfCountries
-		String[] labelsArray = this.getChartsJsLabels(listOfCountries.get(0));
-		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
-		for (Map m : listOfCountries) {
-			// dataArrayList = formatDataService.getDataArrayList(m);
-			if (requestType == RequestType.RAW_DATA) {
-				dataArrayList = formatDataService.getDataArrayList(m);
-			} else if (requestType == RequestType.DAILY_INCREASE) {
-				dataArrayList = dataProcessingService.calculateDailyIncrease(m);
-			}
-			String label = locations[index].getProvinceState().equalsIgnoreCase("")
-					? locations[index].getCountryRegion()
-					: locations[index].getProvinceState();
-			ChartsJsDataSet dataSet = new ChartsJsDataSet(dataArrayList, label);
-			arrayList.add(dataSet);
-			index++;
-		}
-		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(arrayList, labelsArray);
-
-		return chartObject;
 	}
 
 	// Handle request for CombinedLocation where countryRegion/provinceState are
@@ -163,46 +125,6 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 		return chartObject;
 	}
 
-	@Override
-	public <T> ChartsJsChartWithOptionsSingleDataSet getChartsJsDataObjectWithOptions(T type, String label,
-			RequestType requestType) {
-
-		List<Integer> dataArrayList = new ArrayList<>();
-		int[] data = new int[0];
-		if (requestType == RequestType.RAW_DATA) {
-			dataArrayList = formatDataService.getDataArrayList(type);
-		} else if (requestType == RequestType.DAILY_INCREASE) {
-			dataArrayList = dataProcessingService.calculateDailyIncrease(type);
-		}
-
-		String[] labels = this.getChartsJsLabels(type);
-		ChartsJsChartWithOptionsSingleDataSet chart = new ChartsJsChartWithOptionsSingleDataSet(this.getOptions(),
-				labels, dataArrayList, label);
-
-		return chart;
-	}
-
-	@Override
-	public <T> ChartsJsDataMultipleDataSets getChartsJsDataObjectsConfirmedAndDailyIncrease(T type, String label) {
-		// Get an array of confirmed cases data
-		ArrayList<Integer> dataArrayList;// = new ArrayList<>();
-		ArrayList<Integer> dailyIncreaseList;
-		dataArrayList = formatDataService.getDataArrayList(type);
-		// Get an array of daily increases data
-		dailyIncreaseList = dataProcessingService.calculateDailyIncrease(type);
-		String[] labelsArray = this.getChartsJsLabels(type);
-
-		ChartsJsDataSet dataSetOne = new ChartsJsDataSet(dataArrayList, "Confirmed Cases");
-		ChartsJsDataSet dataSetTwo = new ChartsJsDataSet(dailyIncreaseList, "Daily Increase");
-		ArrayList<ChartsJsDataSet> arrayList = new ArrayList<>();
-		arrayList.add(dataSetOne);
-		arrayList.add(dataSetTwo);
-
-		ChartsJsDataMultipleDataSets chartObject = new ChartsJsDataMultipleDataSets(arrayList, labelsArray);
-
-		return chartObject;
-	}
-
 	// Get an array of labels for a chart
 	@Override
 	public <T> String[] getChartsJsLabels(T type) {
@@ -214,29 +136,6 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 			index++;
 		}
 		return stringArray;
-	}
-
-	public ChartsJsOptions getOptions() {
-		// xAxes config
-		Ticks ticks = new Ticks(true, 20);
-		XAxes xAxes = new XAxes(ticks);
-		ArrayList<XAxes> xAxesArrayList = new ArrayList<>();
-		xAxesArrayList.add(xAxes);
-		// yAxes config
-		String id = "left-y-axis";
-		String type = "linear";
-		String position = "left";
-		YAxes yAxesLeft = new YAxes(id, type, position);
-		id = "right-y-axis";
-		position = "right";
-		YAxes yAxesRight = new YAxes(id, type, position);
-		ArrayList<YAxes> yAxesArrayList = new ArrayList<>();
-		yAxesArrayList.add(yAxesLeft);
-		yAxesArrayList.add(yAxesRight);
-		Scales scales = new Scales(yAxesArrayList, xAxesArrayList);
-		ChartsJsOptions options = new ChartsJsOptions(scales);
-
-		return options;
 	}
 
 	@Override
@@ -256,6 +155,6 @@ public class ChartsJsDataService implements ChartsJsDataServiceLocal {
 			}
 		}
 
-		return "Unknlow";
+		return "Unknown";
 	}
 }

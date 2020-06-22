@@ -1,31 +1,28 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
+# Java related
+target/**
+*.jar
+*.war
+*.ear
+*.class
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
+# eclipse specific
+*.pydevproject
 .project
-.settings
-.springBeans
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+/target/**
+/old
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
+/Test.txt
+/CurrentVersion/
+/PreviousVersion/

@@ -35,8 +35,6 @@ public class ConvertToStringService implements ConvertToStringServiceLocal {
 		String jsonString = "No result";
 		try {
 			jsonString = "[" + mapper.writeValueAsString(type) + "]";
-			System.out.println("Generic");
-			System.out.println(jsonString);
 		} catch (JsonProcessingException ex) {
 			Logger.getLogger(ConvertToStringService.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -49,8 +47,6 @@ public class ConvertToStringService implements ConvertToStringServiceLocal {
 		String jsonString = "No result";
 		try {
 			jsonString = mapper.writeValueAsString(type);
-			System.out.println("Generic");
-			System.out.println(jsonString);
 		} catch (JsonProcessingException ex) {
 			Logger.getLogger(ConvertToStringService.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -64,7 +60,6 @@ public class ConvertToStringService implements ConvertToStringServiceLocal {
 			String temp = mapper.writeValueAsString(type);
 			// remove the leading and trailing and
 			result = temp.substring(1, temp.length() - 1);
-			System.out.println("Result: " + result);
 		} catch (JsonProcessingException ex) {
 			Logger.getLogger(ConvertToStringService.class.getName()).log(Level.SEVERE, null, ex);
 		}

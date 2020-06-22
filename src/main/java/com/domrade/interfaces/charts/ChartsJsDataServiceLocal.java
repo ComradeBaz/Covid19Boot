@@ -10,10 +10,8 @@ import java.util.LinkedHashMap;
 
 import org.springframework.stereotype.Service;
 
-import com.domrade.chartjs.chart.ChartsJsChartWithOptionsSingleDataSet;
 import com.domrade.chartjs.chart.data.ChartsJsDataMultipleDataSets;
 import com.domrade.chartjs.chart.data.ChartsJsDataSingleDataSet;
-import com.domrade.chartjs.chart.data.Location;
 import com.domrade.chartjs.chart.data.LocationCombinedCountryAndState;
 import com.domrade.entity.EntityType;
 import com.domrade.rest.request.RequestType;
@@ -32,17 +30,6 @@ public interface ChartsJsDataServiceLocal {
 
 	// get labels for the chart
 	public <T> String[] getChartsJsLabels(T type);
-
-	// get more than one data set for a chart
-	public <T> ChartsJsDataMultipleDataSets getChartsJsDataForMoreThanOneLocation(
-			ArrayList<LinkedHashMap<String, Integer>> listOfCountries, Location[] locations, RequestType requestType);
-
-	// get total confirmed and daily increase in one chart
-	public <T> ChartsJsDataMultipleDataSets getChartsJsDataObjectsConfirmedAndDailyIncrease(T type, String label);
-
-	// get a chart with options set
-	public <T> ChartsJsChartWithOptionsSingleDataSet getChartsJsDataObjectWithOptions(T type, String label,
-			RequestType requestType);
 
 	// get the chart label - type of data being displayed, eg Total Confirmed, Total
 	// Deaths, Confirmed - Daily Increase, Deaths - Daily Increase
